@@ -1,0 +1,79 @@
+html {
+	box-sizing: border-box;
+	background-color: #222;
+	font-family: 'Comfortaa';
+}
+
+#defaultCanvas0 {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 0;
+}
+
+#uibox {
+	position: fixed;
+	width: 400px;
+	height: 40px;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: 200px;
+	z-index: 1;
+}
+
+.ui {
+	display: inline-block;
+	text-align: center;
+	font-weight: 600;
+	font-size: 32px;
+	color: #eee;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	 user-select: none;
+}
+
+#northsymbol,
+#eastsymbol,
+#northtext,
+#easttext {
+	position: absolute;
+	right: 230px;
+	color: #fff;
+}
+
+#eastsymbol {
+	right: 50px;
+}
+
+#northtext {
+	right: 300px;
+}
+
+#easttext {
+	right: 120px;
+}
+
+#inputBox {
+	position: absolute;
+	width: 600px;
+	height: 40px;
+	text-align: center;
+	font-family: 'Comfortaa';
+	background-color: #222;
+	color: #fff;
+	border: none;
+	line-height: normal;
+	font-size: 28px;
+	top: 160px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1;
+}
+
+#inputBox:focus {
+	outline: none;
+}
