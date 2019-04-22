@@ -209,10 +209,12 @@ function handleInput(e) {
 function updateStories() {
 	stories = [];
 	storyData = storyJSON['stories'];
-	for (var i = 0; i < storyData.length; i++) {
-		var currentStory = storyData[i];
-		append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
-	}
+	if (storyData) {
+		for (var i = 0; i < storyData.length; i++) {
+			var currentStory = storyData[i];
+			append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
+		}
+	} else console.log('Had trouble loading stories during this ping.');
 }
 
 function easeValue(val, target) {
@@ -238,10 +240,7 @@ function issueRequest(sText) {
 	xhr.send();
 }
 
-//update the stories every 5 seconds
+//update the stories every second
 setInterval(function() {
-	setTimeout(function() {
-		storyJSON = loadJSON('assets/stories.json');
-	}, 2500);
-    updateStories();
-}, 5000);
+	storyJSON = loadJSON('assets/stories.json', updateStories());
+}, 1000);
