@@ -207,9 +207,10 @@ function handleInput(e) {
 }
 
 function updateStories() {
-	stories = [];
-	storyData = storyJSON['stories'];
 	if (storyData) {
+		stories = [];
+		storyData = storyJSON['stories'];
+
 		for (var i = 0; i < storyData.length; i++) {
 			var currentStory = storyData[i];
 			append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
