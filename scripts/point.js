@@ -28,5 +28,15 @@ function Point (x, y, z, pointSize) {
 			translate(this.pos.x, this.pos.y, this.pos.z);
 			sphere(this.size);
 		pop();
+
+		//add floors
+		if (this.isBuilding) {
+			for (var i = 0; i < floors; i++) {
+				push();
+					translate(this.pos.x, this.pos.y + i * floorHeight, this.pos.z);
+					sphere(this.size);
+				pop();
+			}
+		}
 	}
 }

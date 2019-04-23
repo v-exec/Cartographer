@@ -1,5 +1,4 @@
 /*
-to do:
 biomes
 day/night cycle
 */
@@ -20,7 +19,7 @@ var ease = 0.1;
 
 //points
 var pointCount = 30;
-var pointGap = 4;
+var pointGap = 120 / pointCount;
 var pointSize = 0.1;
 var points = [];
 
@@ -35,6 +34,8 @@ var cityXoff = 1000;
 var cityYoff = 5000;
 var cityThreshold = 0.3;
 var cityMul = 0.9;
+var floorHeight = 4;
+var floors = 2;
 
 //clouds
 var cloudXoff;
@@ -44,7 +45,7 @@ var cloudThreshold = 0.2;
 
 //time
 var clock = 0;
-var clockSpeed 0.1;
+var clockSpeed = 0.1;
 
 //colors
 var valleyColor;
