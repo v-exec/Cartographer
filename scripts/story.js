@@ -6,7 +6,7 @@ function Story (x, y, storyText, time) {
 	this.show = function() {
 		if ((abs(xOff - this.pos.x) < 1.4) && (abs(yOff - this.pos.y) < 1.4)) {
 			fill(0);
-			stroke(peak.x, peak.y, peak.z);
+			stroke(storyPinColor.x, storyPinColor.y, storyPinColor.z);
 
 			var distX = xOff - this.pos.x;
 			var distY = yOff - this.pos.y;

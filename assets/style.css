@@ -2,23 +2,37 @@ html {
 	box-sizing: border-box;
 	background-color: #222;
 	font-family: 'Comfortaa';
+	overflow: hidden;
 }
 
-#defaultCanvas0 {
+::-moz-selection {
+	color: #fff;
+	background: #222;
+}
+
+::selection {
+	color: #fff;
+	background: #222;
+}
+
+#main {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+#defaultCanvas0 {
 	z-index: 0;
 }
 
 #uibox {
-	position: fixed;
+	position: relative;
 	width: 400px;
 	height: 40px;
 	left: 50%;
 	transform: translateX(-50%);
-	bottom: 200px;
+	bottom: 50px;
 	z-index: 1;
 }
 
@@ -58,9 +72,9 @@ html {
 }
 
 #inputBox {
-	position: absolute;
+	position: relative;
 	width: 600px;
-	height: 40px;
+	height: 20px;
 	text-align: center;
 	font-family: 'Comfortaa';
 	background-color: #222;
@@ -68,7 +82,7 @@ html {
 	border: none;
 	line-height: normal;
 	font-size: 28px;
-	top: 160px;
+	top: 9px;
 	left: 50%;
 	transform: translateX(-50%);
 	z-index: 1;

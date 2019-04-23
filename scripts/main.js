@@ -1,3 +1,9 @@
+/*
+to do:
+biomes
+day/night cycle
+*/
+
 //sketch size
 var size = 600;
 
@@ -21,14 +27,32 @@ var points = [];
 //heights
 var heightMul = 50;
 var heightGap = 8;
-var makeGaps = false;
-var drawLowSpheres = false;
+var heightLayers = 10;
+var originSize = 5;
+
+//cities
+var cityXoff = 1000;
+var cityYoff = 5000;
+var cityThreshold = 0.3;
+var cityMul = 0.9;
+
+//clouds
+var cloudXoff;
+var cloudYoff;
+var cloudHeight = -30;
+var cloudThreshold = 0.2;
+
+//time
+var clock = 0;
+var clockSpeed 0.1;
 
 //colors
-var valley;
-var peak;
+var valleyColor;
+var peakColor;
 var gridColor;
 var storyTextColor;
+var storyPinColor;
+var cityColor;
 
 //grids
 var grid = new Grid();
@@ -37,7 +61,7 @@ var gridLine = 0.01;
 
 //stories
 var stories = [];
-var storyHeight = - (heightMul / 5);
+var storyHeight = -(heightMul / 6);
 var storyScale = 3;
 var fontScale = 5;
 var storyFont;
@@ -46,6 +70,8 @@ var storyData = [];
 
 //input
 var inputBox;
+var pinDistance = 1;
+var pinOriginDistance = 5;
 
 //camera
 var camRotationUp = -35;
@@ -60,13 +86,13 @@ function preload() {
 }
 
 function setup() {
-	createCanvas(size, size, WEBGL);
+	var canvas = createCanvas(size, size, WEBGL);
+	canvas.parent(document.getElementById('canvasParent'));
 
-	//colors
-	valley = createVector(120, 210, 175);
-	peak = createVector(255, 100, 100);
-	gridColor = createVector(60, 60, 60);
-	storyTextColor = createVector(255, 255, 255);
+	noiseSeed(500);
+
+	cloudXoff = random(50, 500);
+	cloudYoff = random(50, 500);
 
 	//generate points
 	for (var i = 0; i < pointCount; i++) {
@@ -87,7 +113,8 @@ function draw() {
 	background(34);
 
 	setupCamera();
-	//orbitControl();
+
+	changeEnvironment();
 
 	moveMap();
 	updatePoints();
@@ -113,18 +140,51 @@ function setupCamera() {
 
 function updatePoints() {
 	var x = xOff;
+	var cityX = cityXoff;
+	var cloudX = cloudXoff;
+
 	for (var i = 0; i < pointCount; i++) {
 		x += res;
+		cityX += res;
+		cloudX += res;
+
 		var y = yOff;
+		var cityY = cityYoff;
+		var cloudY = cloudYoff;
+
 		for (var j = 0; j < pointCount; j++) {
 			y += res;
-			var index = i + (j * pointCount);
-			var noiseY = noise(x, y);
+			cityY += res;
+			cloudY += res;
 
-			//make central mountain
+			//make terrain
+			var index = i + (j * pointCount);
+			var terrainNoise = noise(x, y) * heightMul;
+
+			//add cities
+			var newNoise = terrainNoise;
+			var citySuccess = false;
+			if (noise(cityX, cityY) < cityThreshold) {
+				for (var k = 0; k < heightLayers; k++) {
+					if (terrainNoise > heightGap * k) newNoise = (heightGap * cityMul) * k;
+				}
+				citySuccess = true;
+			}
+			if (citySuccess) terrainNoise = newNoise;
+
+			//add clouds
+			if (noise(cloudX, cloudY) < cloudThreshold) {
+				terrainNoise = cloudHeight;
+			}
+
+			//make origin
 			var mDistance = dist(0, 0, xOff, yOff);
-			if (mDistance < 4) points[index].update(lerp(noiseY * heightMul, gridHeight, map(mDistance, 0, 4, 1, 0)));
-			else points[index].update(noiseY * heightMul);
+			if (mDistance < originSize) {
+				points[index].update(lerp(terrainNoise, gridHeight, map(mDistance, 0, originSize, 1, 0)), false);
+			} else {
+				if (citySuccess) points[index].update(terrainNoise, true);
+				else points[index].update(terrainNoise, false);
+			}
 		}
 	}
 }
@@ -167,6 +227,10 @@ function moveMap() {
 
 	xOff += movement.x;
 	yOff += movement.y;
+	cityXoff += movement.x;
+	cityYoff += movement.y;
+	cloudXoff += movement.x;
+	cloudYoff += movement.y;
 
 	select('#easttext').html(nf(xOff / 10, 0, 1));
 	select('#northtext').html(nf(yOff / 10, 0, 1));
@@ -181,11 +245,12 @@ function handleInput(e) {
 		//check for nearby pins
 		var near = false;
 		for (var i = 0; i < stories.length; i++) {
-			if (abs(xOff - stories[i].pos.x) < 0.8 && abs(yOff - stories[i].pos.y) < 0.8) near = true;
+			if (dist(stories[i].pos.x, stories[i].pos.y, xOff, yOff) < pinDistance) near = true;
 		}
 
-		if (!near) {
-			//create new pin - server save
+		//create new pin - server save
+		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
+			if (!near) {
 			var h = hour();
 			if (h == 12) h = h + ':' + minute() + 'pm';
 			else if (h > 12) h = (h - 12) + ':' + minute() + 'pm';
@@ -199,12 +264,34 @@ function handleInput(e) {
 			newJSON.time = time;
 
 			append(storyJSON['stories'], newJSON);
-
 			issueRequest(JSON.stringify(storyJSON));
+			} else {
+				inputBox.placeholder = 'pin too close to nearby pins';
+				setTimeout(function() {
+					inputBox.placeholder = 'pin';
+				}, 3000);
+			}
 		} else {
-			inputBox.value = 'pin too close to nearby pins';
+			inputBox.placeholder = 'pin too close to origin';
+				setTimeout(function() {
+				inputBox.placeholder = 'pin';
+			}, 3000);
 		}
 	}
+}
+
+function changeEnvironment() {
+	//variable
+	valleyColor = createVector(120, 210, 175);
+	peakColor = createVector(255, 100, 100);
+	cityColor = createVector(60, 200, 210);
+	cloudThreshold = 0.2;
+
+	//static
+	cloudColor = createVector(255, 255, 255);
+	gridColor = createVector(60, 60, 60);
+	storyTextColor = createVector(255, 255, 255);
+	storyPinColor = createVector(255, 255, 255);
 }
 
 function updateStories() {
@@ -244,5 +331,7 @@ function issueRequest(sText) {
 
 //update the stories every second
 setInterval(function() {
-	storyJSON = loadJSON('assets/stories.json', updateStories());
+	if (updateStories()) {
+		storyJSON = loadJSON('assets/stories.json', updateStories());
+	}
 }, 1000);
