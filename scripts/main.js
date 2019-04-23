@@ -7,7 +7,7 @@ var yOff = 0;
 var res = 0.1;
 
 //movement speed
-var speed = 0.2;
+var speed = 0.15;
 var currentX = 0;
 var currentY = 0;
 var ease = 0.1;
@@ -20,8 +20,8 @@ var points = [];
 
 //heights
 var heightMul = 50;
-var heightGap = 10;
-var makeGaps = true;
+var heightGap = 8;
+var makeGaps = false;
 var drawLowSpheres = false;
 
 //colors
@@ -120,7 +120,11 @@ function updatePoints() {
 			y += res;
 			var index = i + (j * pointCount);
 			var noiseY = noise(x, y);
-			points[index].update(noiseY * heightMul);
+
+			//make central mountain
+			var mDistance = dist(0, 0, xOff, yOff);
+			if (mDistance < 4) points[index].update(lerp(noiseY * heightMul, gridHeight, map(mDistance, 0, 4, 1, 0)));
+			else points[index].update(noiseY * heightMul);
 		}
 	}
 }
@@ -181,16 +185,13 @@ function handleInput(e) {
 		}
 
 		if (!near) {
-			//create new pin - local
+			//create new pin - server save
 			var h = hour();
 			if (h == 12) h = h + ':' + minute() + 'pm';
 			else if (h > 12) h = (h - 12) + ':' + minute() + 'pm';
 			else h = h + ':' + minute() + 'am';
-
 			var time = day() + '/' + month() + '/' + year() + ' - ' + h;
-			append(stories, new Story(xOff, yOff, input, time));
-
-			//create new pin - server save
+			
 			var newJSON = {};
 			newJSON.x = xOff;
 			newJSON.y = yOff;
