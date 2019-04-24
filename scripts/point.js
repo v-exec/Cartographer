@@ -12,7 +12,7 @@ function Point (x, y, z, pointSize) {
 
 	this.show = function() {
 		//get sphere color depending on height
-		if (this.pos.y == cloudHeight) {
+		if (this.pos.y == -cloudHeight) {
 			stroke(255);
 		} else if (this.isBuilding) {
 			stroke(cityColor.x, cityColor.y, cityColor.z);
@@ -31,9 +31,13 @@ function Point (x, y, z, pointSize) {
 
 		//add floors
 		if (this.isBuilding) {
+			push();
+				translate(this.pos.x, this.pos.y + ((i + 1) * floorHeight), this.pos.z);
+				sphere(this.size);
+			pop();
 			for (var i = 0; i < floors; i++) {
 				push();
-					translate(this.pos.x, this.pos.y + i * floorHeight, this.pos.z);
+					translate(this.pos.x, this.pos.y - ((i + 1) * floorHeight), this.pos.z);
 					sphere(this.size);
 				pop();
 			}

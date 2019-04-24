@@ -1,7 +1,5 @@
-/*
-biomes
-day/night cycle
-*/
+//biomes - lerp between multiple noise sets - whoever is highest is drawn, blend where values are especially close
+//time - change brightness of ground + city
 
 //sketch size
 var size = 600;
@@ -25,7 +23,6 @@ var points = [];
 
 //heights
 var heightMul = 50;
-var heightGap = 8;
 var heightLayers = 10;
 var originSize = 5;
 
@@ -34,14 +31,21 @@ var cityXoff = 1000;
 var cityYoff = 5000;
 var cityThreshold = 0.3;
 var cityMul = 0.9;
+var cityGap = 7;
 var floorHeight = 4;
-var floors = 2;
+var floors = 1;
 
 //clouds
 var cloudXoff;
 var cloudYoff;
-var cloudHeight = -30;
-var cloudThreshold = 0.2;
+var cloudSpeedMax = 0.04;
+var cloudMovement;
+var windChaos = 0.001;
+var cloudHeight = 30;
+var cloudThreshold;
+var cloudiness = 600;
+var cloudinessInc = 0.001;
+var maxCloudiness = 0.5;
 
 //time
 var clock = 0;
@@ -54,6 +58,27 @@ var gridColor;
 var storyTextColor;
 var storyPinColor;
 var cityColor;
+
+//biome
+var forestPeakColor;
+var forestValleyColor;
+var forestHeightMul = 50;
+var forestCityChance = 0.3;
+
+var desertPeakColor;
+var desertValleyColor;
+var desertHeightMul = 15;
+var desertCityChange = 0.1;
+
+var oceanPeakColor;
+var oceanValleyColor;
+var oceanHeightMul = 0;
+var oceanCityChance = 0.05;
+
+var alienPeakColor;
+var alienValleyColor;
+var alienHeightMul = 50;
+var oceanCityChance = 0.25;
 
 //grids
 var grid = new Grid();
@@ -90,24 +115,10 @@ function setup() {
 	var canvas = createCanvas(size, size, WEBGL);
 	canvas.parent(document.getElementById('canvasParent'));
 
-	noiseSeed(500);
-
-	cloudXoff = random(50, 500);
-	cloudYoff = random(50, 500);
-
-	//generate points
-	for (var i = 0; i < pointCount; i++) {
-		for (var j = 0; j < pointCount; j++) {
-			append(points, new Point(i * pointGap, 0, j * pointGap, pointSize));
-		}
-	}
-
-	//generate stories
-	storyData = storyJSON['stories'];
-	for (var i = 0; i < storyData.length; i++) {
-		var currentStory = storyData[i];
-		append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
-	}
+	initializeColors();
+	initializeCloudNoise();
+	generatePoints();
+	generateStories();
 }
 
 function draw() {
@@ -115,7 +126,8 @@ function draw() {
 
 	setupCamera();
 
-	changeEnvironment();
+	manageClouds();
+	passTime();
 
 	moveMap();
 	updatePoints();
@@ -125,6 +137,36 @@ function draw() {
 
 	for (var i = 0; i < stories.length; i++) {
 		stories[i].show();
+	}
+}
+
+function initializeColors() {
+	gridColor = createVector(60, 60, 60);
+	storyTextColor = createVector(255, 255, 255);
+	storyPinColor = createVector(255, 255, 255);
+}
+
+function initializeCloudNoise() {
+	noiseSeed(500);
+
+	cloudXoff = random(50, 500);
+	cloudYoff = random(50, 500);
+	cloudMovement = random(50, 500);
+}
+
+function generatePoints() {
+	for (var i = 0; i < pointCount; i++) {
+		for (var j = 0; j < pointCount; j++) {
+			append(points, new Point(i * pointGap, 0, j * pointGap, pointSize));
+		}
+	}
+}
+
+function generateStories() {
+	storyData = storyJSON['stories'];
+	for (var i = 0; i < storyData.length; i++) {
+		var currentStory = storyData[i];
+		append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
 	}
 }
 
@@ -167,7 +209,7 @@ function updatePoints() {
 			var citySuccess = false;
 			if (noise(cityX, cityY) < cityThreshold) {
 				for (var k = 0; k < heightLayers; k++) {
-					if (terrainNoise > heightGap * k) newNoise = (heightGap * cityMul) * k;
+					if (terrainNoise > cityGap * k) newNoise = (cityGap * cityMul) * k;
 				}
 				citySuccess = true;
 			}
@@ -175,7 +217,8 @@ function updatePoints() {
 
 			//add clouds
 			if (noise(cloudX, cloudY) < cloudThreshold) {
-				terrainNoise = cloudHeight;
+				terrainNoise = -cloudHeight;
+				citySuccess = false;
 			}
 
 			//make origin
@@ -281,18 +324,28 @@ function handleInput(e) {
 	}
 }
 
-function changeEnvironment() {
-	//variable
+function manageClouds() {
+	cloudiness += cloudinessInc;
+	cloudThreshold = map(noise(cloudiness), 0, 1, 0, maxCloudiness);
+	cloudMovement += windChaos;
+	cloudXoff += map(noise(cloudMovement), 0, 1, -cloudSpeedMax, cloudSpeedMax);
+	cloudYoff += map(noise(cloudMovement), 0, 1, -cloudSpeedMax, cloudSpeedMax);
+}
+
+function passTime() {
+	clock += clockSpeed;
+	if (clock > 12) clock = -12;
+	
+	//time
 	valleyColor = createVector(120, 210, 175);
 	peakColor = createVector(255, 100, 100);
 	cityColor = createVector(60, 200, 210);
-	cloudThreshold = 0.2;
-
-	//static
 	cloudColor = createVector(255, 255, 255);
-	gridColor = createVector(60, 60, 60);
-	storyTextColor = createVector(255, 255, 255);
-	storyPinColor = createVector(255, 255, 255);
+
+	//biome
+	valleyColor = createVector(120, 210, 175);
+	peakColor = createVector(255, 100, 100);
+	cityColor = createVector(60, 200, 210);
 }
 
 function updateStories() {
