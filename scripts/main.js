@@ -105,6 +105,7 @@ var camZoom = 300;
 function preload() {
 	storyFont = loadFont('assets/Comfortaa-Bold.otf');
 	storyJSON = loadJSON('assets/stories.json');
+	storyData = storyJSON['stories'];
 	inputBox = document.getElementById('inputBox');
 }
 
@@ -202,20 +203,36 @@ function updatePoints() {
 	var x = xOff;
 	var cityX = cityXoff;
 	var cloudX = cloudXoff;
+	var forestX = forest.x;
+	var desertX = desert.x;
+	var oceanX = ocean.x;
+	var alienX = alien.x;
 
 	for (var i = 0; i < pointCount; i++) {
 		x += res;
 		cityX += res;
 		cloudX += res;
+		forestX += forest.res;
+		desertX += desert.res;
+		oceanX += ocean.res;
+		alienX += alien.res;
 
 		var y = yOff;
 		var cityY = cityYoff;
 		var cloudY = cloudYoff;
+		var forestY = forest.y;
+		var desertY = desert.y;
+		var oceanY = ocean.y;
+		var alienY = alien.y;
 
 		for (var j = 0; j < pointCount; j++) {
 			y += res;
 			cityY += res;
 			cloudY += res;
+			forestY += forest.res;
+			desertY += desert.res;
+			oceanY += ocean.res;
+			alienY += alien.res;
 
 			//make terrain
 			var index = i + (j * pointCount);
