@@ -1,5 +1,4 @@
 //biomes - lerp between multiple noise sets - whoever is highest is drawn, blend where values are especially close
-//time - change brightness of ground + city
 
 //sketch size
 var size = 600;
@@ -25,11 +24,12 @@ var points = [];
 var heightMul = 50;
 var heightLayers = 10;
 var originSize = 5;
+var waterHeight = 35;
 
 //cities
 var cityXoff = 1000;
 var cityYoff = 5000;
-var cityThreshold = 0.3;
+var cityThreshold = 0.25;
 var cityMul = 0.9;
 var cityGap = 7;
 var floorHeight = 4;
@@ -49,36 +49,33 @@ var maxCloudiness = 0.5;
 
 //time
 var clock = 0;
-var clockSpeed = 0.1;
+var clockSpeed = 0.01;
 
 //colors
 var valleyColor;
 var peakColor;
+var cityColor;
+var waterColor;
+var cloudColor;
 var gridColor;
 var storyTextColor;
 var storyPinColor;
-var cityColor;
+
+var currentValley;
+var currentPeak;
+var currentCity;
+var currentWater;
+var currentCloud;
+
+var nightDarkness = 2;
 
 //biome
-var forestPeakColor;
-var forestValleyColor;
-var forestHeightMul = 50;
-var forestCityChance = 0.3;
-
-var desertPeakColor;
-var desertValleyColor;
-var desertHeightMul = 15;
-var desertCityChange = 0.1;
-
-var oceanPeakColor;
-var oceanValleyColor;
-var oceanHeightMul = 0;
-var oceanCityChance = 0.05;
-
-var alienPeakColor;
-var alienValleyColor;
-var alienHeightMul = 50;
-var oceanCityChance = 0.25;
+var forest;
+var desert;
+var ocean;
+var alien;
+var biomeRes = 0.1;
+var biomeBlend = 0.1;
 
 //grids
 var grid = new Grid();
@@ -115,6 +112,7 @@ function setup() {
 	var canvas = createCanvas(size, size, WEBGL);
 	canvas.parent(document.getElementById('canvasParent'));
 
+	initializeBiomes();
 	initializeColors();
 	initializeCloudNoise();
 	generatePoints();
@@ -140,10 +138,29 @@ function draw() {
 	}
 }
 
+function initializeBiomes() {
+	forest = new Biome(800, 800, biomeRes, createVector(0, 255, 0), createVector(50, 50, 0), createVector(50, 50, 0), createVector(0, 180, 210), 25, 50, 0.25);
+	desert = new Biome(120, 120, biomeRes, createVector(255, 225, 100), createVector(255, 190, 85), createVector(255, 165, 75), createVector(0, 0, 0), 0, 20, 0.1);
+	ocean = new Biome(920, 920, biomeRes, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), 30, 0, 0);
+	alien = new Biome(740, 740, biomeRes, createVector(255, 100, 100), createVector(120, 210, 175), createVector(60, 200, 210), createVector(120, 210, 175), 20, 50, 0.05);
+}
+
 function initializeColors() {
 	gridColor = createVector(60, 60, 60);
 	storyTextColor = createVector(255, 255, 255);
 	storyPinColor = createVector(255, 255, 255);
+	currentCloud = createVector(255, 255, 255);
+
+	valleyColor = alien.valleyColor;
+	peakColor = alien.peakColor;
+	cityColor = alien.cityColor;
+	waterColor = alien.waterColor;
+	cloudColor = createVector(255, 255, 255);
+
+	currentValley = alien.valleyColor;
+	currentPeak = alien.peakColor;
+	currentCity = alien.cityColor;
+	currentWater = alien.waterColor;
 }
 
 function initializeCloudNoise() {
@@ -276,6 +293,15 @@ function moveMap() {
 	cloudXoff += movement.x;
 	cloudYoff += movement.y;
 
+	forest.x += movement.x;
+	forest.y += movement.y;
+	ocean.x += movement.x;
+	ocean.y += movement.y;
+	desert.x += movement.x;
+	desert.y += movement.y;
+	alien.x += movement.x;
+	alien.y += movement.y;
+
 	select('#easttext').html(nf(xOff / 10, 0, 1));
 	select('#northtext').html(nf(yOff / 10, 0, 1));
 }
@@ -335,17 +361,26 @@ function manageClouds() {
 function passTime() {
 	clock += clockSpeed;
 	if (clock > 12) clock = -12;
-	
-	//time
-	valleyColor = createVector(120, 210, 175);
-	peakColor = createVector(255, 100, 100);
-	cityColor = createVector(60, 200, 210);
-	cloudColor = createVector(255, 255, 255);
 
-	//biome
-	valleyColor = createVector(120, 210, 175);
-	peakColor = createVector(255, 100, 100);
-	cityColor = createVector(60, 200, 210);
+	//sunset
+	if (clock > 6 && clock < 8) {
+		var sunset = map(clock, 6, 8, 0, 1);
+		currentValley = p5.Vector.lerp(valleyColor, p5.Vector.div(valleyColor, nightDarkness), sunset);
+		currentPeak = p5.Vector.lerp(peakColor, p5.Vector.div(peakColor, nightDarkness), sunset);
+		currentWater = p5.Vector.lerp(waterColor, p5.Vector.div(waterColor, nightDarkness), sunset);
+		currentCity = p5.Vector.lerp(p5.Vector.div(cityColor, nightDarkness), cityColor, sunset);
+		currentCloud = p5.Vector.lerp(cloudColor, p5.Vector.div(cloudColor, nightDarkness), sunset);
+	}
+
+	//sunrise
+	if (clock < -6 && clock > -8) {
+		var sunrise = map(clock, -8, -6, 0, 1);
+		currentValley = p5.Vector.lerp(p5.Vector.div(valleyColor, nightDarkness), valleyColor, sunrise);
+		currentPeak = p5.Vector.lerp(p5.Vector.div(peakColor, nightDarkness), peakColor, sunrise);
+		currentWater = p5.Vector.lerp(p5.Vector.div(waterColor, nightDarkness), waterColor, sunrise);
+		currentCity = p5.Vector.lerp(cityColor, p5.Vector.div(cityColor, nightDarkness), sunrise);
+		currentCloud = p5.Vector.lerp(p5.Vector.div(cloudColor, nightDarkness), cloudColor, sunrise);
+	}
 }
 
 function updateStories() {

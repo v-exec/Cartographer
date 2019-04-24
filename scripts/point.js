@@ -8,18 +8,22 @@ function Point (x, y, z, pointSize) {
 	this.update = function(newY, building) {
 		this.pos.y = newY;
 		this.isBuilding = building;
+
+		if (this.pos.y > waterHeight) this.pos.y = waterHeight;
 	}
 
 	this.show = function() {
 		//get sphere color depending on height
 		if (this.pos.y == -cloudHeight) {
-			stroke(255);
+			stroke(currentCloud.x, currentCloud.y, currentCloud.z);
+		} else if (this.pos.y == waterHeight) {
+			stroke(currentWater.x, currentWater.y, currentWater.z);
 		} else if (this.isBuilding) {
-			stroke(cityColor.x, cityColor.y, cityColor.z);
+			stroke(currentCity.x, currentCity.y, currentCity.z);
 		} else {
-			var colorR = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, peakColor.x, valleyColor.x, true);
-			var colorG = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, peakColor.y, valleyColor.y, true);
-			var colorB = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, peakColor.z, valleyColor.z, true);
+			var colorR = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, currentPeak.x, currentValley.x, true);
+			var colorG = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, currentPeak.y, currentValley.y, true);
+			var colorB = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, currentPeak.z, currentValley.z, true);
 			stroke(colorR, colorG, colorB);
 		}
 
