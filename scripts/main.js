@@ -1,4 +1,4 @@
-//biomes - lerp where values are especially close
+//biomes - proper resolution, proper color assignment, border blending
 
 function preload() {
 	storyFont = loadFont('assets/Comfortaa-Bold.otf');
@@ -22,15 +22,13 @@ function draw() {
 	background(34);
 
 	setupCamera();
+	grid.show();
 
 	manageClouds();
 	passTime();
 
 	moveMap();
 	updatePoints();
-
-	grid.show();
-	drawPoints();
 
 	for (var i = 0; i < stories.length; i++) {
 		stories[i].show();
@@ -139,12 +137,6 @@ function updatePoints() {
 				else points[index].update(terrainNoise, false);
 			}
 		}
-	}
-}
-
-function drawPoints() {
-	for (var i = 0; i < points.length; i++) {
-		points[i].show();
 	}
 }
 

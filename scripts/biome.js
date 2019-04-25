@@ -1,7 +1,6 @@
-function Biome (x, y, r, pc, vc, cc, wc, wh, hm, ch) {
+function Biome (x, y, pc, vc, cc, wc, wh, hm, ch) {
 	this.x = x;
 	this.y = y;
-	this.res = r;
 	this.peakColor = pc;
 	this.valleyColor = vc;
 	this.cityColor = cc;

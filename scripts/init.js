@@ -77,8 +77,6 @@ var forest;
 var desert;
 var ocean;
 var alien;
-var biomeRes;
-var biomeBlend = 0.1;
 
 //grids
 var grid = new Grid();
@@ -106,11 +104,11 @@ var camHeight = -30;
 var camZoom = 300;
 
 function initializeBiomes() {
-	//x, y, res, peak, valley, city, water, water height, height, citychance
-	forest = new Biome(800, 800, res, createVector(0, 255, 0), createVector(50, 50, 0), createVector(50, 50, 0), createVector(0, 180, 210), 25, 50, 0.25);
-	desert = new Biome(120, 120, res, createVector(255, 225, 100), createVector(255, 190, 85), createVector(255, 165, 75), createVector(0, 0, 0), 0, 20, 0.1);
-	ocean = new Biome(920, 920, res, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), 30, 0, 0);
-	alien = new Biome(740, 740, res, createVector(255, 100, 100), createVector(120, 210, 175), createVector(30, 170, 140), createVector(120, 210, 175), 20, 50, 0.05);
+	//x, y, peak, valley, city, water, water height, height, citychance
+	forest = new Biome(800, 800, createVector(0, 255, 0), createVector(50, 50, 0), createVector(50, 50, 0), createVector(0, 180, 210), 25, 50, 0.25);
+	desert = new Biome(120, 120,createVector(255, 225, 100), createVector(255, 190, 85), createVector(255, 165, 75), createVector(0, 0, 0), 0, 20, 0.1);
+	ocean = new Biome(920, 920, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), 30, 0, 0);
+	alien = new Biome(740, 740, createVector(255, 100, 100), createVector(120, 210, 175), createVector(30, 170, 140), createVector(120, 210, 175), 20, 50, 0.05);
 }
 
 function initializeColors() {

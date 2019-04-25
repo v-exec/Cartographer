@@ -4,15 +4,12 @@ function Point (x, y, z, pointSize) {
 	this.size = pointSize;
 	this.isBuilding = false;
 
-	//make postion locked to low resolution height
 	this.update = function(newY, building) {
 		this.pos.y = newY;
 		this.isBuilding = building;
 
 		if (this.pos.y > currentWaterHeight) this.pos.y = currentWaterHeight;
-	}
 
-	this.show = function() {
 		//get sphere color depending on height
 		if (this.pos.y == -cloudHeight) {
 			stroke(currentCloud.x, currentCloud.y, currentCloud.z);
