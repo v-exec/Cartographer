@@ -1,6 +1,6 @@
 function Grid () {
 	this.show = function() {
-		stroke(gridColor.x, gridColor.y, gridColor.z);
+		fill(gridColor.x, gridColor.y, gridColor.z);
 
 		//top right
 		push();

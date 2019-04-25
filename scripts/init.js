@@ -1,3 +1,6 @@
+//arguments
+p5.disableFriendlyErrors = true;
+
 //sketch size
 var size = 600;
 
@@ -15,7 +18,8 @@ var movementEase = 0.1;
 //points
 var pointCount = 30;
 var pointGap = 120 / pointCount;
-var pointSize = 0.1;
+var pointSize = 0.6;
+var sphereDetail = 6;
 var points = [];
 
 //heights
@@ -81,7 +85,7 @@ var alien;
 //grids
 var grid = new Grid();
 var gridHeight = 40;
-var gridLine = 0.01;
+var gridLine = 0.7;
 
 //stories
 var stories = [];

@@ -1,4 +1,5 @@
 //biomes - proper resolution, proper color assignment, border blending
+//optimize
 
 function preload() {
 	storyFont = loadFont('assets/Comfortaa-Bold.otf');
@@ -10,6 +11,8 @@ function preload() {
 function setup() {
 	var canvas = createCanvas(size, size, WEBGL);
 	canvas.parent(document.getElementById('canvasParent'));
+
+	noStroke();
 
 	initializeBiomes();
 	initializeColors();
