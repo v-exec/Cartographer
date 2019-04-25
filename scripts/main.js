@@ -60,10 +60,10 @@ function updatePoints() {
 		x += res;
 		cityX += res;
 		cloudX += res;
-		forestX += forest.res;
-		desertX += desert.res;
-		oceanX += ocean.res;
-		alienX += alien.res;
+		forestX += res;
+		desertX += res;
+		oceanX += res;
+		alienX += res;
 
 		var y = yOff;
 		var cityY = cityYoff;
@@ -77,10 +77,10 @@ function updatePoints() {
 			y += res;
 			cityY += res;
 			cloudY += res;
-			forestY += forest.res;
-			desertY += desert.res;
-			oceanY += ocean.res;
-			alienY += alien.res;
+			forestY += res;
+			desertY += res;
+			oceanY += res;
+			alienY += res;
 
 			var index = i + (j * pointCount);
 
@@ -260,14 +260,14 @@ function passTime() {
 		currentValley = p5.Vector.lerp(valleyColor, p5.Vector.div(valleyColor, nightDarkness), sunset);
 		currentPeak = p5.Vector.lerp(peakColor, p5.Vector.div(peakColor, nightDarkness), sunset);
 		currentWater = p5.Vector.lerp(waterColor, p5.Vector.div(waterColor, nightDarkness), sunset);
-		currentCity = p5.Vector.lerp(p5.Vector.div(cityColor, nightDarkness), cityColor, sunset);
+		currentCity = p5.Vector.lerp(cityColor, p5.Vector.mult(cityColor, cityNightBrightness), sunset);
 		currentCloud = p5.Vector.lerp(cloudColor, p5.Vector.div(cloudColor, nightDarkness), sunset);
 	} else if (clock < -6 && clock > -8) {
 		var sunrise = map(clock, -8, -6, 0, 1);
 		currentValley = p5.Vector.lerp(p5.Vector.div(valleyColor, nightDarkness), valleyColor, sunrise);
 		currentPeak = p5.Vector.lerp(p5.Vector.div(peakColor, nightDarkness), peakColor, sunrise);
 		currentWater = p5.Vector.lerp(p5.Vector.div(waterColor, nightDarkness), waterColor, sunrise);
-		currentCity = p5.Vector.lerp(cityColor, p5.Vector.div(cityColor, nightDarkness), sunrise);
+		currentCity = p5.Vector.lerp(p5.Vector.mult(cityColor, cityNightBrightness), cityColor, sunrise);
 		currentCloud = p5.Vector.lerp(p5.Vector.div(cloudColor, nightDarkness), cloudColor, sunrise);
 	} else {
 		// currentValley = easeValueVector(currentValley, valleyColor, colorEase);

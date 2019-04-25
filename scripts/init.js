@@ -69,7 +69,7 @@ var currentWater;
 var currentCloud;
 
 var nightDarkness = 2;
-var cityNightDarkness = 1.4; //todo
+var cityNightBrightness = 1.4;
 var colorEase = 0.05;
 
 //biome
@@ -77,8 +77,8 @@ var forest;
 var desert;
 var ocean;
 var alien;
-var biomeRes = res;
-var biomeBlend = 0.1; //todo
+var biomeRes;
+var biomeBlend = 0.1;
 
 //grids
 var grid = new Grid();
@@ -106,17 +106,17 @@ var camHeight = -30;
 var camZoom = 300;
 
 function initializeBiomes() {
-	forest = new Biome(800, 800, biomeRes, createVector(0, 255, 0), createVector(50, 50, 0), createVector(50, 50, 0), createVector(0, 180, 210), 25, 50, 0.25);
-	desert = new Biome(120, 120, biomeRes, createVector(255, 225, 100), createVector(255, 190, 85), createVector(255, 165, 75), createVector(0, 0, 0), 0, 20, 0.1);
-	ocean = new Biome(920, 920, biomeRes, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), 30, 0, 0);
-	alien = new Biome(740, 740, biomeRes, createVector(255, 100, 100), createVector(120, 210, 175), createVector(60, 200, 210), createVector(120, 210, 175), 20, 50, 0.05);
+	//x, y, res, peak, valley, city, water, water height, height, citychance
+	forest = new Biome(800, 800, res, createVector(0, 255, 0), createVector(50, 50, 0), createVector(50, 50, 0), createVector(0, 180, 210), 25, 50, 0.25);
+	desert = new Biome(120, 120, res, createVector(255, 225, 100), createVector(255, 190, 85), createVector(255, 165, 75), createVector(0, 0, 0), 0, 20, 0.1);
+	ocean = new Biome(920, 920, res, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), 30, 0, 0);
+	alien = new Biome(740, 740, res, createVector(255, 100, 100), createVector(120, 210, 175), createVector(30, 170, 140), createVector(120, 210, 175), 20, 50, 0.05);
 }
 
 function initializeColors() {
 	gridColor = createVector(60, 60, 60);
 	storyTextColor = createVector(255, 255, 255);
 	storyPinColor = createVector(255, 255, 255);
-	currentCloud = createVector(255, 255, 255);
 
 	valleyColor = alien.valleyColor;
 	peakColor = alien.peakColor;
@@ -124,10 +124,11 @@ function initializeColors() {
 	waterColor = alien.waterColor;
 	cloudColor = createVector(255, 255, 255);
 
-	currentValley = alien.valleyColor;
-	currentPeak = alien.peakColor;
-	currentCity = alien.cityColor;
-	currentWater = alien.waterColor;
+	currentValley = valleyColor;
+	currentPeak = peakColor;
+	currentCity = cityColor;
+	currentWater = waterColor;
+	currentCloud = cloudColor;
 }
 
 function initializeCloudNoise() {
