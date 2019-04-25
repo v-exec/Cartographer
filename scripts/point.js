@@ -9,14 +9,14 @@ function Point (x, y, z, pointSize) {
 		this.pos.y = newY;
 		this.isBuilding = building;
 
-		if (this.pos.y > waterHeight) this.pos.y = waterHeight;
+		if (this.pos.y > currentWaterHeight) this.pos.y = currentWaterHeight;
 	}
 
 	this.show = function() {
 		//get sphere color depending on height
 		if (this.pos.y == -cloudHeight) {
 			stroke(currentCloud.x, currentCloud.y, currentCloud.z);
-		} else if (this.pos.y == waterHeight) {
+		} else if (this.pos.y == currentWaterHeight) {
 			stroke(currentWater.x, currentWater.y, currentWater.z);
 		} else if (this.isBuilding) {
 			stroke(currentCity.x, currentCity.y, currentCity.z);

@@ -17,10 +17,10 @@ function Story (x, y, storyText, time) {
 			textAlign(CENTER, CENTER);
 
 			push();
-				translate(-distY * 45, storyHeight, -distX * 45);
+				translate(-distY * 45, -storyHeight, -distX * 45);
 
 				push();
-					translate(0, storyHeight * 3, 0);
+					translate(0, -storyHeight * 3, 0);
 					rotate(radians(-camRotationLeft), createVector(0, 1, 0));
 					rotate(radians(-camRotationUp), createVector(1, 0, 0));
 					text(this.text + "\n\n" + this.time, 0, 0);
