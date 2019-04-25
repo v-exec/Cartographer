@@ -112,33 +112,35 @@ function updatePoints() {
 
 			//make terrain
 			var terrainNoise = (noise(x, y) * -heightMul) + heightLower;
+			points[index].isBuilding = false;
+			points[index].isCloud = false;
 
 			//add cities
 			var newNoise = terrainNoise;
-			var citySuccess = false;
 			if (noise(cityX, cityY) < cityThreshold) {
 				for (var k = 0; k < heightLayers; k++) {
 					if (terrainNoise > cityGap * k) newNoise = (cityGap * cityMul) * k;
 				}
-				citySuccess = true;
+				points[index].isBuilding = true;
 			}
-			if (citySuccess) terrainNoise = newNoise;
+			if (points[index].isBuilding) terrainNoise = newNoise;
 
 			//add clouds
 			if (noise(cloudX, cloudY) < cloudThreshold) {
 				terrainNoise = -cloudHeight;
-				citySuccess = false;
+				points[index].isBuilding = false;
+				points[index].isCloud = true;
 			}
 
 			//make origin
 			var mDistance = dist(0, 0, xOff, yOff);
 			if (mDistance < originSize) {
+				points[index].isBuilding = false;
+				points[index].isCloud = false;
+
 				currentWaterHeight = lerp(waterHeight, gridHeight, map(mDistance, 0, originSize, 1, 0));
-				points[index].update(lerp(terrainNoise, gridHeight, map(mDistance, 0, originSize, 1, 0)), false);
-			} else {
-				if (citySuccess) points[index].update(terrainNoise, true);
-				else points[index].update(terrainNoise, false);
-			}
+				points[index].update(lerp(terrainNoise, gridHeight, map(mDistance, 0, originSize, 1, 0)));
+			} else points[index].update(terrainNoise);
 		}
 	}
 }

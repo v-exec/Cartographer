@@ -3,15 +3,15 @@ function Point (x, y, z, pointSize) {
 	this.pos = createVector(x - ((pointCount * pointGap) / 2) + pointGap, y, z - ((pointCount * pointGap) / 2));
 	this.size = pointSize;
 	this.isBuilding = false;
+	this.isCloud = false;
 
-	this.update = function(newY, building) {
+	this.update = function(newY) {
 		this.pos.y = newY;
-		this.isBuilding = building;
 
 		if (this.pos.y > currentWaterHeight) this.pos.y = currentWaterHeight;
 
 		//get sphere color depending on height
-		if (this.pos.y == -cloudHeight) {
+		if (this.isCloud) {
 			fill(currentCloud.x, currentCloud.y, currentCloud.z);
 		} else if (this.pos.y == currentWaterHeight) {
 			fill(currentWater.x, currentWater.y, currentWater.z);
