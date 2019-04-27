@@ -2,8 +2,25 @@ function Point (x, y, z, pointSize) {
 	//set position so that it is centered on world origin
 	this.pos = createVector(x - ((pointCount * pointGap) / 2) + pointGap, y, z - ((pointCount * pointGap) / 2));
 	this.size = pointSize;
+
 	this.isBuilding = false;
 	this.isCloud = false;
+
+	this.peakColor;
+	this.valleyColor;
+	this.cityColor;
+	this.waterColor;
+	this.waterHeight;
+	this.heightMul;
+
+	this.colors = function(p, v, c, w, wh, h) {
+		this.peakColor = p;
+		this.valleyColor = v;
+		this.cityColor = c;
+		this.waterColor = w;
+		this.waterHeight = wh;
+		this.heightMul = h;
+	}
 
 	this.update = function(newY) {
 		this.pos.y = newY;
@@ -18,9 +35,9 @@ function Point (x, y, z, pointSize) {
 		} else if (this.isBuilding) {
 			fill(currentCity.x, currentCity.y, currentCity.z);
 		} else {
-			var colorR = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, currentPeak.x, currentValley.x, true);
-			var colorG = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, currentPeak.y, currentValley.y, true);
-			var colorB = map(this.pos.y, heightMul * 0.1, heightMul * 0.9, currentPeak.z, currentValley.z, true);
+			var colorR = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, currentPeak.x, currentValley.x, true);
+			var colorG = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, currentPeak.y, currentValley.y, true);
+			var colorB = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, currentPeak.z, currentValley.z, true);
 			fill(colorR, colorG, colorB);
 		}
 

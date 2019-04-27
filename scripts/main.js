@@ -1,6 +1,3 @@
-//biomes - proper resolution, proper color assignment, border blending
-//optimize
-
 function preload() {
 	storyFont = loadFont('assets/Comfortaa-Bold.otf');
 	storyJSON = loadJSON('assets/stories.json');
@@ -61,10 +58,10 @@ function updatePoints() {
 		x += res;
 		cityX += res;
 		cloudX += res;
-		forestX += res;
-		desertX += res;
-		oceanX += res;
-		alienX += res;
+		forestX += res / biomeSize;
+		desertX += res / biomeSize;
+		oceanX += res / biomeSize;
+		alienX += res / biomeSize;
 
 		var y = yOff;
 		var cityY = cityYoff;
@@ -78,10 +75,10 @@ function updatePoints() {
 			y += res;
 			cityY += res;
 			cloudY += res;
-			forestY += res;
-			desertY += res;
-			oceanY += res;
-			alienY += res;
+			forestY += res / biomeSize;
+			desertY += res / biomeSize;
+			oceanY += res / biomeSize;
+			alienY += res / biomeSize;
 
 			var index = i + (j * pointCount);
 
@@ -91,24 +88,33 @@ function updatePoints() {
 			var oceanNoise = noise(oceanX, oceanY);
 			var alienNoise = noise(alienX, alienY);
 
+			//find chosen biome(s)
 			var biomeVal = [forestNoise, desertNoise, oceanNoise, alienNoise];
 			biomeVal.sort(sortAscending);
 
-			var chosenBiome = biomeVal[biomeVal.length - 1];
+			var chosenBiomeValue = biomeVal[biomeVal.length - 1];
+			var secondaryBiomeValue = biomeVal[biomeVal.length - 2];
+			var chosenBiome;
+			var secondaryBiome;
 
-			// if (chosenBiome == forestNoise) {
-			// 	heightMul = forest.heightMul;
-			// 	//valleyColor = forest.valleyColor;
-			// } else if (chosenBiome == desertNoise) {
-			// 	heightMul = desert.heightMul;
-			// 	//valleyColor = desert.valleyColor;
-			// } else if (chosenBiome == oceanNoise) {
-			// 	heightMul = ocean.heightMul;
-			// 	//valleyColor = ocean.valleyColor;
-			// } else if (chosenBiome == alienNoise) {
-			// 	heightMul = alien.heightMul;
-			// 	//valleyColor = alien.valleyColor;
-			// }
+			if (chosenBiomeValue == forestNoise) chosenBiome = forest;
+			else if (chosenBiomeValue == desertNoise) chosenBiome = desert;
+			else if (chosenBiomeValue == oceanNoise) chosenBiome = ocean;
+			else if (chosenBiomeValue == alienNoise) chosenBiome = alien;
+
+			if (secondaryBiomeValue == forestNoise) secondaryBiome = forest;
+			else if (secondaryBiomeValue == desertNoise) secondaryBiome = desert;
+			else if (secondaryBiomeValue == oceanNoise) secondaryBiome = ocean;
+			else if (secondaryBiomeValue == alienNoise) secondaryBiome = alien;
+
+			//blend biomes
+			var biomeDifference = abs(chosenBiome - secondaryBiome);
+
+			if (biomeDifference < biomeBlendThreshold) {
+				var blendedBiome = blendBiomes(chosenBiome, secondaryBiome, map(biomeDifference, 0, biomeBlendThreshold, 0, 1));
+			} else {
+				reassignBiome(chosenBiome);
+			}
 
 			//make terrain
 			var terrainNoise = (noise(x, y) * -heightMul) + heightLower;
@@ -140,7 +146,10 @@ function updatePoints() {
 
 				currentWaterHeight = lerp(waterHeight, gridHeight, map(mDistance, 0, originSize, 1, 0));
 				points[index].update(lerp(terrainNoise, gridHeight, map(mDistance, 0, originSize, 1, 0)));
-			} else points[index].update(terrainNoise);
+			} else {
+				currentWaterHeight = waterHeight;
+				points[index].update(terrainNoise);
+			}
 		}
 	}
 }
@@ -182,14 +191,14 @@ function moveMap() {
 	cloudXoff += movement.x;
 	cloudYoff += movement.y;
 
-	forest.x += movement.x;
-	forest.y += movement.y;
-	ocean.x += movement.x;
-	ocean.y += movement.y;
-	desert.x += movement.x;
-	desert.y += movement.y;
-	alien.x += movement.x;
-	alien.y += movement.y;
+	forest.x += movement.x / biomeSize;
+	forest.y += movement.y / biomeSize;
+	ocean.x += movement.x / biomeSize;
+	ocean.y += movement.y / biomeSize;
+	desert.x += movement.x / biomeSize;
+	desert.y += movement.y / biomeSize;
+	alien.x += movement.x / biomeSize;
+	alien.y += movement.y / biomeSize;
 
 	select('#easttext').html(nf(xOff / 10, 0, 1));
 	select('#northtext').html(nf(yOff / 10, 0, 1));
@@ -267,10 +276,10 @@ function passTime() {
 		currentCity = p5.Vector.lerp(p5.Vector.mult(cityColor, cityNightBrightness), cityColor, sunrise);
 		currentCloud = p5.Vector.lerp(p5.Vector.div(cloudColor, nightDarkness), cloudColor, sunrise);
 	} else {
-		// currentValley = easeValueVector(currentValley, valleyColor, colorEase);
-		// currentPeak = easeValueVector(currentPeak, peakColor, colorEase);
-		// currentWater = easeValueVector(currentWater, waterColor, colorEase);
-		// currentCity = easeValueVector(currentCity, cityColor, colorEase);
+		currentValley = easeValueVector(currentValley, valleyColor, colorEase);
+		currentPeak = easeValueVector(currentPeak, peakColor, colorEase);
+		currentWater = easeValueVector(currentWater, waterColor, colorEase);
+		currentCity = easeValueVector(currentCity, cityColor, colorEase);
 	}
 }
 

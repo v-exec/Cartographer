@@ -27,7 +27,7 @@ var heightMul = 50;
 var heightLower = 45;
 var heightLayers = 10;
 var originSize = 5;
-var waterHeight = 35;
+var waterHeight = 30;
 var currentWaterHeight;
 
 //cities
@@ -50,11 +50,12 @@ var cloudHeight = 30;
 var cloudThreshold;
 var cloudiness = 600;
 var cloudinessInc = 0.001;
-var maxCloudiness = 0.5;
+var maxCloudiness = 0.4;
 
 //time
 var clock = 0;
-var clockSpeed = 0.01;
+//var clockSpeed = 0.01;
+var clockSpeed = 0.0001;
 
 //colors
 var valleyColor;
@@ -81,6 +82,9 @@ var forest;
 var desert;
 var ocean;
 var alien;
+var biomeSize = 40;
+var oceanHeight = 35;
+var biomeBlendThreshold = 0.1;
 
 //grids
 var grid = new Grid();
@@ -109,10 +113,10 @@ var camZoom = 300;
 
 function initializeBiomes() {
 	//x, y, peak, valley, city, water, water height, height, citychance
-	forest = new Biome(800, 800, createVector(0, 255, 0), createVector(50, 50, 0), createVector(50, 50, 0), createVector(0, 180, 210), 25, 50, 0.25);
-	desert = new Biome(120, 120,createVector(255, 225, 100), createVector(255, 190, 85), createVector(255, 165, 75), createVector(0, 0, 0), 0, 20, 0.1);
-	ocean = new Biome(920, 920, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), 30, 0, 0);
-	alien = new Biome(740, 740, createVector(255, 100, 100), createVector(120, 210, 175), createVector(30, 170, 140), createVector(120, 210, 175), 20, 50, 0.05);
+	forest = new Biome(800, 800, createVector(110, 200, 110), createVector(50, 50, 0), createVector(100, 100, 0), createVector(0, 180, 210), oceanHeight, 50, 0.25);
+	desert = new Biome(120, 120,createVector(255, 225, 100), createVector(135, 100, 40), createVector(255, 165, 75), createVector(0, 0, 0), 1000, 25, 0.1);
+	ocean = new Biome(920, 920, createVector(0, 0, 0), createVector(0, 0, 0), createVector(0, 0, 0), createVector(90, 165, 230), oceanHeight, 0, 0);
+	alien = new Biome(740, 740, createVector(255, 100, 100), createVector(120, 210, 175), createVector(30, 170, 140), createVector(120, 210, 175), oceanHeight, 50, 0.1);
 }
 
 function initializeColors() {
