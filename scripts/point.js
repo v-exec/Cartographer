@@ -10,16 +10,12 @@ function Point (x, y, z, pointSize) {
 	this.valleyColor;
 	this.cityColor;
 	this.waterColor;
-	this.waterHeight;
-	this.heightMul;
 
-	this.colors = function(p, v, c, w, wh, h) {
+	this.nature = function(p, v, c, w) {
 		this.peakColor = p;
 		this.valleyColor = v;
 		this.cityColor = c;
 		this.waterColor = w;
-		this.waterHeight = wh;
-		this.heightMul = h;
 	}
 
 	this.update = function(newY) {
@@ -27,17 +23,17 @@ function Point (x, y, z, pointSize) {
 
 		if (this.pos.y > currentWaterHeight) this.pos.y = currentWaterHeight;
 
-		//get sphere color depending on height
+		//get sphere color
 		if (this.isCloud) {
 			fill(currentCloud.x, currentCloud.y, currentCloud.z);
 		} else if (this.pos.y == currentWaterHeight) {
-			fill(currentWater.x, currentWater.y, currentWater.z);
+			fill(this.waterColor.x, this.waterColor.y, this.waterColor.z);
 		} else if (this.isBuilding) {
-			fill(currentCity.x, currentCity.y, currentCity.z);
+			fill(this.cityColor.x, this.cityColor.y, this.cityColor.z);
 		} else {
-			var colorR = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, currentPeak.x, currentValley.x, true);
-			var colorG = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, currentPeak.y, currentValley.y, true);
-			var colorB = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, currentPeak.z, currentValley.z, true);
+			var colorR = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, this.peakColor.x, this.valleyColor.x, true);
+			var colorG = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, this.peakColor.y, this.valleyColor.y, true);
+			var colorB = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, this.peakColor.z, this.valleyColor.z, true);
 			fill(colorR, colorG, colorB);
 		}
 

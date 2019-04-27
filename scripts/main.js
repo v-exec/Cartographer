@@ -108,22 +108,22 @@ function updatePoints() {
 			else if (secondaryBiomeValue == alienNoise) secondaryBiome = alien;
 
 			//blend biomes
-			var biomeDifference = abs(chosenBiome - secondaryBiome);
+			var biomeDifference = chosenBiomeValue - secondaryBiomeValue;
+			var resultBiome;
 
-			if (biomeDifference < biomeBlendThreshold) {
-				var blendedBiome = blendBiomes(chosenBiome, secondaryBiome, map(biomeDifference, 0, biomeBlendThreshold, 0, 1));
-			} else {
-				reassignBiome(chosenBiome);
-			}
+			if (abs(biomeDifference) < biomeBlendThreshold) resultBiome = blendBiomes(chosenBiome, secondaryBiome, map(biomeDifference, -biomeBlendThreshold, biomeBlendThreshold, 1, 0, true));
+			else resultBiome = chosenBiome;
+
+			points[index].nature(resultBiome.peakColor, resultBiome.valleyColor, resultBiome.cityColor, resultBiome.waterColor);
 
 			//make terrain
-			var terrainNoise = (noise(x, y) * -heightMul) + heightLower;
+			var terrainNoise = (noise(x, y) * -resultBiome.heightMul) + heightLower;
 			points[index].isBuilding = false;
 			points[index].isCloud = false;
 
 			//add cities
 			var newNoise = terrainNoise;
-			if (noise(cityX, cityY) < cityThreshold) {
+			if (noise(cityX, cityY) < resultBiome.cityChance) {
 				for (var k = 0; k < heightLayers; k++) {
 					if (terrainNoise > cityGap * k) newNoise = (cityGap * cityMul) * k;
 				}
@@ -132,7 +132,7 @@ function updatePoints() {
 			if (points[index].isBuilding) terrainNoise = newNoise;
 
 			//add clouds
-			if (noise(cloudX, cloudY) < cloudThreshold) {
+			if (noise(cloudX, cloudY) < resultBiome.currentClouds) {
 				terrainNoise = -cloudHeight;
 				points[index].isBuilding = false;
 				points[index].isCloud = true;
@@ -144,10 +144,10 @@ function updatePoints() {
 				points[index].isBuilding = false;
 				points[index].isCloud = false;
 
-				currentWaterHeight = lerp(waterHeight, gridHeight, map(mDistance, 0, originSize, 1, 0));
+				currentWaterHeight = lerp(resultBiome.waterHeight, gridHeight, map(mDistance, 0, originSize, 1, 0));
 				points[index].update(lerp(terrainNoise, gridHeight, map(mDistance, 0, originSize, 1, 0)));
 			} else {
-				currentWaterHeight = waterHeight;
+				currentWaterHeight = resultBiome.waterHeight;
 				points[index].update(terrainNoise);
 			}
 		}
@@ -250,7 +250,12 @@ function handleInput(e) {
 
 function manageClouds() {
 	cloudiness += cloudinessInc;
-	cloudThreshold = map(noise(cloudiness), 0, 1, 0, maxCloudiness);
+
+	forest.clouds(cloudiness);
+	desert.clouds(cloudiness);
+	ocean.clouds(cloudiness);
+	alien.clouds(cloudiness);
+
 	cloudMovementX += windChaos;
 	cloudMovementY += windChaos;
 	cloudXoff += map(noise(cloudMovementX), 0, 1, -cloudSpeedMax, cloudSpeedMax);
@@ -263,23 +268,19 @@ function passTime() {
 
 	if (clock > 6 && clock < 8) {
 		var sunset = map(clock, 6, 8, 0, 1);
-		currentValley = p5.Vector.lerp(valleyColor, p5.Vector.div(valleyColor, nightDarkness), sunset);
-		currentPeak = p5.Vector.lerp(peakColor, p5.Vector.div(peakColor, nightDarkness), sunset);
-		currentWater = p5.Vector.lerp(waterColor, p5.Vector.div(waterColor, nightDarkness), sunset);
-		currentCity = p5.Vector.lerp(cityColor, p5.Vector.mult(cityColor, cityNightBrightness), sunset);
+		biomeSunset(forest, sunset);
+		biomeSunset(desert, sunset);
+		biomeSunset(ocean, sunset);
+		biomeSunset(alien, sunset);
 		currentCloud = p5.Vector.lerp(cloudColor, p5.Vector.div(cloudColor, nightDarkness), sunset);
+
 	} else if (clock < -6 && clock > -8) {
 		var sunrise = map(clock, -8, -6, 0, 1);
-		currentValley = p5.Vector.lerp(p5.Vector.div(valleyColor, nightDarkness), valleyColor, sunrise);
-		currentPeak = p5.Vector.lerp(p5.Vector.div(peakColor, nightDarkness), peakColor, sunrise);
-		currentWater = p5.Vector.lerp(p5.Vector.div(waterColor, nightDarkness), waterColor, sunrise);
-		currentCity = p5.Vector.lerp(p5.Vector.mult(cityColor, cityNightBrightness), cityColor, sunrise);
+		biomeSunrise(forest, sunrise);
+		biomeSunrise(desert, sunrise);
+		biomeSunrise(ocean, sunrise);
+		biomeSunrise(alien, sunrise);
 		currentCloud = p5.Vector.lerp(p5.Vector.div(cloudColor, nightDarkness), cloudColor, sunrise);
-	} else {
-		currentValley = easeValueVector(currentValley, valleyColor, colorEase);
-		currentPeak = easeValueVector(currentPeak, peakColor, colorEase);
-		currentWater = easeValueVector(currentWater, waterColor, colorEase);
-		currentCity = easeValueVector(currentCity, cityColor, colorEase);
 	}
 }
 
