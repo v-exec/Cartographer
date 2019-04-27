@@ -145,7 +145,7 @@ function updatePoints() {
 				points[index].isCloud = false;
 
 				currentWaterHeight = lerp(resultBiome.waterHeight, gridHeight, map(mDistance, 0, originSize, 1, 0));
-				points[index].update(lerp(terrainNoise, gridHeight, map(mDistance, 0, originSize, 1, 0)));
+				points[index].update(lerp(terrainNoise, gridHeight - 1, map(mDistance, 0, originSize, 1, 0)));
 			} else {
 				currentWaterHeight = resultBiome.waterHeight;
 				points[index].update(terrainNoise);
