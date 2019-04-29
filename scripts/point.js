@@ -10,12 +10,14 @@ function Point (x, y, z, pointSize) {
 	this.valleyColor;
 	this.cityColor;
 	this.waterColor;
+	this.heightmul;
 
-	this.nature = function(p, v, c, w) {
+	this.nature = function(p, v, c, w, h) {
 		this.peakColor = p;
 		this.valleyColor = v;
 		this.cityColor = c;
 		this.waterColor = w;
+		this.heightMul = h;
 	}
 
 	this.update = function(newY) {
@@ -31,9 +33,9 @@ function Point (x, y, z, pointSize) {
 		} else if (this.isBuilding) {
 			fill(this.cityColor.x, this.cityColor.y, this.cityColor.z);
 		} else {
-			var colorR = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, this.peakColor.x, this.valleyColor.x, true);
-			var colorG = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, this.peakColor.y, this.valleyColor.y, true);
-			var colorB = map(this.pos.y, gridHeight - heightMul * 0.8, gridHeight - heightMul * 0.2, this.peakColor.z, this.valleyColor.z, true);
+			var colorR = map(this.pos.y, gridHeight - this.heightMul * 0.8, gridHeight - this.heightMul * 0.1, this.peakColor.x, this.valleyColor.x, true);
+			var colorG = map(this.pos.y, gridHeight - this.heightMul * 0.8, gridHeight - this.heightMul * 0.1, this.peakColor.y, this.valleyColor.y, true);
+			var colorB = map(this.pos.y, gridHeight - this.heightMul * 0.8, gridHeight - this.heightMul * 0.1, this.peakColor.z, this.valleyColor.z, true);
 			fill(colorR, colorG, colorB);
 		}
 

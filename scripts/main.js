@@ -94,8 +94,10 @@ function updatePoints() {
 
 			var chosenBiomeValue = biomeVal[biomeVal.length - 1];
 			var secondaryBiomeValue = biomeVal[biomeVal.length - 2];
+			var tirtiaryBiomeValue = biomeVal[biomeVal.length - 3];
 			var chosenBiome;
 			var secondaryBiome;
+			var tirtiaryBiome;
 
 			if (chosenBiomeValue == forestNoise) chosenBiome = forest;
 			else if (chosenBiomeValue == desertNoise) chosenBiome = desert;
@@ -107,14 +109,19 @@ function updatePoints() {
 			else if (secondaryBiomeValue == oceanNoise) secondaryBiome = ocean;
 			else if (secondaryBiomeValue == alienNoise) secondaryBiome = alien;
 
+			if (tirtiaryBiomeValue == forestNoise) tirtiaryBiome = forest;
+			else if (tirtiaryBiomeValue == desertNoise) tirtiaryBiome = desert;
+			else if (tirtiaryBiomeValue == oceanNoise) tirtiaryBiome = ocean;
+			else if (tirtiaryBiomeValue == alienNoise) tirtiaryBiome = alien;
+
 			//blend biomes
-			var biomeDifference = chosenBiomeValue - secondaryBiomeValue;
 			var resultBiome;
+			var biomeDifference = chosenBiomeValue - secondaryBiomeValue;
 
 			if (abs(biomeDifference) < biomeBlendThreshold) resultBiome = blendBiomes(chosenBiome, secondaryBiome, map(biomeDifference, -biomeBlendThreshold, biomeBlendThreshold, 1, 0, true));
 			else resultBiome = chosenBiome;
 
-			points[index].nature(resultBiome.peakColor, resultBiome.valleyColor, resultBiome.cityColor, resultBiome.waterColor);
+			points[index].nature(resultBiome.peakColor, resultBiome.valleyColor, resultBiome.cityColor, resultBiome.waterColor, resultBiome.heightMul);
 
 			//make terrain
 			var terrainNoise = (noise(x, y) * -resultBiome.heightMul) + heightLower;

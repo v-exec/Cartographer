@@ -23,7 +23,6 @@ var sphereDetail = 6;
 var points = [];
 
 //heights
-var heightMul = 50;
 var heightLower = 45;
 var heightLayers = 10;
 var originSize = 5;
@@ -59,7 +58,7 @@ var gridColor;
 var storyTextColor;
 var storyPinColor;
 
-var nightDarkness = 2;
+var nightDarkness = 1.4;
 var cityNightBrightness = 1.4;
 
 //biome
@@ -98,8 +97,8 @@ var camZoom = 300;
 
 function initializeBiomes() {
 	//x, y, peak, valley, city, water, water height, height, citychance, cloudchance
-	forest = new Biome(800, 800, createVector(110, 200, 110), createVector(50, 50, 0), createVector(100, 100, 0), createVector(0, 180, 210), oceanHeight, 50, 0.25, 0.4);
-	desert = new Biome(120, 120,createVector(255, 225, 100), createVector(135, 100, 40), createVector(255, 165, 75), createVector(90, 165, 230), oceanHeight + 8, 25, 0.15, 0.15);
+	forest = new Biome(800, 800, createVector(110, 200, 110), createVector(90, 90, 10), createVector(100, 100, 0), createVector(0, 180, 210), oceanHeight, 50, 0.25, 0.4);
+	desert = new Biome(120, 120,createVector(255, 225, 100), createVector(165, 120, 60), createVector(255, 165, 75), createVector(90, 165, 230), oceanHeight + 8, 25, 0.15, 0.15);
 	ocean = new Biome(920, 920, createVector(255, 225, 100), createVector(255, 225, 100), createVector(0, 0, 0), createVector(90, 165, 230), oceanHeight, 12, 0, 0.5);
 	alien = new Biome(740, 740, createVector(255, 100, 100), createVector(120, 210, 175), createVector(30, 170, 180), createVector(120, 210, 175), oceanHeight, 50, 0.2, 0.4);
 }
