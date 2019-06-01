@@ -303,7 +303,7 @@ function updateStories() {
 	} else console.log('Had trouble loading stories during this ping.');
 }
 
-var apiPath = 'http://exp.v-os.ca/Cartographer/scripts/writer.php';
+var apiPath = 'http://exp.v-os.ca/cartographer/scripts/writer.php';
 
 function issueRequest(sText) {
 	var xhr = new XMLHttpRequest();
