@@ -227,9 +227,13 @@ function handleInput(e) {
 		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
 			if (!near) {
 			var h = hour();
-			if (h == 12) h = h + ':' + minute() + 'pm';
-			else if (h > 12) h = (h - 12) + ':' + minute() + 'pm';
-			else h = h + ':' + minute() + 'am';
+			var m = minute();
+
+			if (m < 10) m = '0' + m;
+			if (h == 12) h = h + ':' + m + 'pm';
+			else if (h > 12) h = (h - 12) + ':' + m + 'pm';
+			else h = h + ':' + m + 'am';
+			
 			var time = day() + '/' + month() + '/' + year() + ' - ' + h;
 			
 			var newJSON = {};
