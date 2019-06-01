@@ -50,6 +50,19 @@ html {
 	 user-select: none;
 }
 
+#root {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	font-size: 14px;
+	text-decoration: none;
+	color: #fff;
+}
+
+#root:hover {
+	background-color: #000;
+}
+
 #northsymbol,
 #eastsymbol,
 #northtext,
