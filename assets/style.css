@@ -35,7 +35,7 @@ html {
 #uibox {
 	position: fixed;
 	width: 100vw;
-	height: calc((100vh - 600px) / 2);
+	height: calc(((100vh - 600px) / 2) - 15px);
 	min-height: 40px;
 	bottom: 15px;
 	z-index: 1;
@@ -67,7 +67,8 @@ html {
 }
 
 #root:hover {
-	background-color: #000;
+	background-color: #fff;
+	color: #000;
 }
 
 #northsymbol,
@@ -81,8 +82,9 @@ html {
 #inputBoxHolder {
 	position: relative;
 	width: 100%;
-	height: calc((100vh - 600px) / 2);
+	height: calc(((100vh - 600px) / 2) - 15px);
 	min-height: 40px;
+	top: 15px;
 }
 
 #inputBox {
