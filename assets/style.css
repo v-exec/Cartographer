@@ -63,6 +63,7 @@ html {
 	font-size: 14px;
 	text-decoration: none;
 	color: #fff;
+	z-index: 2;
 }
 
 #root:hover {
