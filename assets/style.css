@@ -20,6 +20,12 @@ html {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	opacity: 0
+}
+
+#main.ready {
+	opacity: 1;
+	transition: opacity 500ms;
 }
 
 #defaultCanvas0 {
@@ -27,13 +33,12 @@ html {
 }
 
 #uibox {
-	position: relative;
-	width: 400px;
+	position: fixed;
+	width: 100vw;
 	height: 40px;
-	left: 50%;
-	transform: translateX(-50%);
-	bottom: 50px;
+	bottom: 15px;
 	z-index: 1;
+	text-align: center
 }
 
 .ui {
@@ -67,21 +72,8 @@ html {
 #eastsymbol,
 #northtext,
 #easttext {
-	position: absolute;
-	right: 230px;
 	color: #fff;
-}
-
-#eastsymbol {
-	right: 50px;
-}
-
-#northtext {
-	right: 300px;
-}
-
-#easttext {
-	right: 120px;
+	margin:0px 15px;
 }
 
 #inputBox {
@@ -90,7 +82,7 @@ html {
 	height: 40px;
 	text-align: center;
 	font-family: 'Comfortaa';
-	background-color: #222;
+	background-color: transparent;
 	color: #fff;
 	border: none;
 	line-height: normal;

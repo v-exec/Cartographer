@@ -23,15 +23,15 @@
 	</head>
 	<body>
 		<a id="root" href="https://v-os.ca/cartographer">cartographer</a>
+		<input type="text" id="inputBox" value="" placeholder="pin" maxlength = "40" onkeypress="handleInput(event)">
 		<div id="main">
-			<input type="text" id="inputBox" value="" placeholder="pin" maxlength = "40" onkeypress="handleInput(event)">
 			<div id="canvasParent"></div>
-			<div id="uibox">
-				<span class="ui" id="northtext">0.0</span>
-				<span class="ui" id="northsymbol">°lo</span>
-				<span class="ui" id="easttext">0.0</span>
-				<span class="ui" id="eastsymbol">°la</span>
-			</div>
+		</div>
+		<div id="uibox">
+			<span class="ui" id="northtext">0.0</span>
+			<span class="ui" id="northsymbol">°lo</span>
+			<span class="ui" id="easttext">0.0</span>
+			<span class="ui" id="eastsymbol">°la</span>
 		</div>
 	</body>
 </html>

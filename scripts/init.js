@@ -134,4 +134,5 @@ function generateStories() {
 		var currentStory = storyData[i];
 		append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
 	}
+	document.getElementById('main').className = 'ready'
 }
