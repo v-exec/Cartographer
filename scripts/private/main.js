@@ -312,7 +312,7 @@ var apiPath = 'http://exp.v-os.ca/cartographer/scripts/public/writer.php';
 function issueRequest(sText) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', apiPath, true);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	xhr.onload = function() {
 		if (xhr.status === 200) {
 			//handle response

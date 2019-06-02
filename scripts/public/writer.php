@@ -9,5 +9,5 @@ if ($_POST['request'] === 'write') {
 		echo 'Saved pin.';
 		return;
 	} else echo 'failure';
-} else echo 'failure;
+} else echo 'failure;';
 ?>
