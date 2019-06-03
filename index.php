@@ -1,7 +1,6 @@
 <?php
 session_start();
-$_SESSION['t'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32);
-$_SESSION['k'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32);
+include 'scripts/private/crypt.php';
 setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
 ?>
 
@@ -16,14 +15,14 @@ setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
 		<link rel='icon' href='https://exp.v-os.ca/cartographer/assets/cartographer.ico' type='image/x-icon'>
 
-		<script src="scripts/private/helpers.js"></script>
-		<script src="scripts/private/biome.js"></script>
-		<script src="scripts/private/point.js"></script>
-		<script src="scripts/private/grid.js"></script>
-		<script src="scripts/private/story.js"></script>
+		<script src="scripts/public/helpers.js"></script>
+		<script src="scripts/public/biome.js"></script>
+		<script src="scripts/public/point.js"></script>
+		<script src="scripts/public/grid.js"></script>
+		<script src="scripts/public/story.js"></script>
 
-		<script src="scripts/private/init.js"></script>
-		<script src="scripts/private/main.js"></script>
+		<script src="scripts/public/init.js"></script>
+		<script src="scripts/public/main.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
 		<link rel="stylesheet" href="assets/style.css">
