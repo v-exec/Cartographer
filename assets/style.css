@@ -75,8 +75,29 @@ html {
 #eastsymbol,
 #northtext,
 #easttext {
+	position: absolute;
+	width: 48px;
 	color: #fff;
-	margin: 0px 15px;
+}
+
+#northtext {
+	left: 50%;
+	transform: translateX(calc(-140px - 24px));
+}
+
+#northsymbol {
+	left: 50%;
+	transform: translateX(calc(-70px - 24px));
+}
+
+#easttext {
+	left: 50%;
+	transform: translateX(calc(70px - 24px));
+}
+
+#eastsymbol {
+	left: 50%;
+	transform: translateX(calc(140px - 24px));
 }
 
 #inputBoxHolder {
