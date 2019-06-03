@@ -1,6 +1,8 @@
 <?php
 session_start();
-$_SESSION['token'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32); 
+$_SESSION['t'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32);
+$_SESSION['k'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32);
+setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +14,7 @@ $_SESSION['token'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32
 		<link href="https://fonts.googleapis.com/css?family=Comfortaa:400,600" rel="stylesheet">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
-		<link rel='icon' href='http://exp.v-os.ca/cartographer/assets/cartographer.ico' type='image/x-icon'>
+		<link rel='icon' href='https://exp.v-os.ca/cartographer/assets/cartographer.ico' type='image/x-icon'>
 
 		<script src="scripts/private/helpers.js"></script>
 		<script src="scripts/private/biome.js"></script>
@@ -32,9 +34,7 @@ $_SESSION['token'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32
 			<input type="text" id="inputBox" value="" placeholder="pin" maxlength = "40" onkeypress="handleInput(event)">
 		</div>
 		<div id="main">
-			<div id="canvasParent">
-				<div id="k" class="<?php echo $_SESSION['token'] ?>" style="display:none"></div>
-			</div>
+			<div id="canvasParent"></div>
 		</div>
 		<div id="uibox">
 			<span class="ui" id="northtext">0.0</span>
@@ -42,5 +42,6 @@ $_SESSION['token'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32
 			<span class="ui" id="easttext">0.0</span>
 			<span class="ui" id="eastsymbol">°la</span>
 		</div>
+		<div id="k" class="<?php echo $_SESSION['k'] ?>" style="display:none"></div>
 	</body>
 </html>

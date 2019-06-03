@@ -226,24 +226,33 @@ function handleInput(e) {
 		//create new pin - server save
 		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
 			if (!near) {
-			var h = hour();
-			var m = minute();
+				if (!storyReady) {
+					var h = hour();
+					var m = minute();
 
-			if (m < 10) m = '0' + m;
-			if (h == 12) h = h + ':' + m + 'pm';
-			else if (h > 12) h = (h - 12) + ':' + m + 'pm';
-			else h = h + ':' + m + 'am';
-			
-			var time = day() + '/' + month() + '/' + year() + ' - ' + h;
-			
-			var newJSON = {};
-			newJSON.x = xOff;
-			newJSON.y = yOff;
-			newJSON.text = input;
-			newJSON.time = time;
+					if (m < 10) m = '0' + m;
+					if (h == 12) h = h + ':' + m + 'pm';
+					else if (h > 12) h = (h - 12) + ':' + m + 'pm';
+					else h = h + ':' + m + 'am';
+					
+					var time = day() + '/' + month() + '/' + year() + ' - ' + h;
+					
+					var newJSON = {};
+					newJSON.x = xOff;
+					newJSON.y = yOff;
+					newJSON.text = input;
+					newJSON.time = time;
 
-			append(storyJSON['stories'], newJSON);
-			issueRequest(JSON.stringify(storyJSON));
+					storyReady = false;
+
+					append(storyJSON['stories'], newJSON);
+					issueRequest(JSON.stringify(storyJSON));
+				} else {
+					inputBox.placeholder = 'multiple pins placed too quickly';
+					setTimeout(function() {
+						inputBox.placeholder = 'pin';
+					}, 3000);
+				}
 			} else {
 				inputBox.placeholder = 'pin too close to nearby pins';
 				setTimeout(function() {
@@ -307,7 +316,7 @@ function updateStories() {
 	} else console.log('Had trouble loading stories during this ping.');
 }
 
-var apiPath = 'http://exp.v-os.ca/cartographer/scripts/public/writer.php';
+var apiPath = 'https://exp.v-os.ca/cartographer/scripts/public/writer.php';
 
 function issueRequest(sText) {
 	var xhr = new XMLHttpRequest();
@@ -324,7 +333,8 @@ function issueRequest(sText) {
 		}
 	};
 	var k = document.getElementById('k').className;
-	xhr.send(encodeURI('request=write&t=' + k + '&text=' + sText));
+	var t = getCookie('t');
+	xhr.send(encodeURI('k=' + k + '&t=' + t + '&text=' + sText));
 }
 
 //update the stories every second
@@ -333,3 +343,7 @@ setInterval(function() {
 		storyJSON = loadJSON('assets/stories.json', updateStories());
 	}
 }, 1000);
+
+setInterval(function() {
+	storyReady = true;
+}, 10000);
