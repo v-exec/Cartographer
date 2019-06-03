@@ -226,7 +226,7 @@ function handleInput(e) {
 		//create new pin - server save
 		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
 			if (!near) {
-				if (!storyReady) {
+				if (storyReady) {
 					var h = hour();
 					var m = minute();
 

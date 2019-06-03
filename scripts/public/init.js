@@ -83,7 +83,7 @@ var fontScale = 5;
 var storyFont;
 var storyJSON;
 var storyData = [];
-var storyReady = false;
+var storyReady = true;
 
 //input
 var inputBox;
