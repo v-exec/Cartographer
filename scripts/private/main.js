@@ -323,7 +323,8 @@ function issueRequest(sText) {
 			console.log('Did not recieve reply.');
 		}
 	};
-	xhr.send(encodeURI('request=write&text=' + sText));
+	var k = document.getElementById('k').className;
+	xhr.send(encodeURI('request=write&t=' + k + '&text=' + sText));
 }
 
 //update the stories every second

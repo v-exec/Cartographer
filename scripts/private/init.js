@@ -50,7 +50,7 @@ var cloudinessInc = 0.001;
 
 //time
 var clock = 0;
-var clockSpeed = 0.01;
+var clockSpeed = 0.02;
 
 //colors
 var cloudColor;
@@ -58,8 +58,8 @@ var gridColor;
 var storyTextColor;
 var storyPinColor;
 
-var nightDarkness = 1.4;
-var cityNightBrightness = 1.4;
+var nightDarkness = 1.7;
+var cityNightBrightness = 1.7;
 
 //biome
 var forest;

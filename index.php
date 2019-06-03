@@ -1,3 +1,8 @@
+<?php
+session_start();
+$_SESSION['token'] = substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32); 
+?>
+
 <!DOCTYPE html>
 <html lang="">
 	<head>
@@ -17,7 +22,7 @@
 
 		<script src="scripts/private/init.js"></script>
 		<script src="scripts/private/main.js"></script>
-		
+
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
 		<link rel="stylesheet" href="assets/style.css">
 	</head>
@@ -27,7 +32,9 @@
 			<input type="text" id="inputBox" value="" placeholder="pin" maxlength = "40" onkeypress="handleInput(event)">
 		</div>
 		<div id="main">
-			<div id="canvasParent"></div>
+			<div id="canvasParent">
+				<div id="k" class="<?php echo $_SESSION['token'] ?>" style="display:none"></div>
+			</div>
 		</div>
 		<div id="uibox">
 			<span class="ui" id="northtext">0.0</span>
