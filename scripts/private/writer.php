@@ -3,7 +3,7 @@ include 'crypt.php';
 $referer = $_SERVER['HTTP_REFERER'];
 
 session_start();
-if (hash_equals($_SESSION['t'], $_POST['t']) && hash_equals($_SESSION['k'], $_POST['k'])) {
+if (hash_equals($_SESSION['t'], $_POST['t']) && password_verify($frontDoor, $_POST['t']) && hash_equals($_SESSION['k'], $_POST['k']) && password_verify($backDoor, $_POST['k'])) {
 	if ($referer == 'https://exp.v-os.ca/cartographer/') {
 		if (($_POST['text']) != null) {
 
