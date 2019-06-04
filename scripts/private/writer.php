@@ -33,7 +33,7 @@ if (strlen($uText) > 40) {
 }
 
 //check if time is formatted properly
-$noon = substr($uTime, strlen($uTime), strlen($uTime));
+$noon = substr($uTime, strlen($uTime) - 2, strlen($uTime));
 
 if ($noon !== 'am' && $noon !== 'pm') {
 	echo 'time is not properly formatted';
