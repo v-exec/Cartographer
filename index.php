@@ -8,7 +8,7 @@ setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
 <html lang="">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<title>Cartographer</title>
 		<link href="https://fonts.googleapis.com/css?family=Comfortaa:400,600" rel="stylesheet">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
@@ -33,6 +33,7 @@ setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
 			<input type="text" id="inputBox" value="" placeholder="pin" maxlength = "40" onkeypress="handleInput(event)">
 		</div>
 		<div id="main">
+			<div id="p5_loading" style="display: none"></div>
 			<div id="canvasParent"></div>
 		</div>
 		<div id="uibox">

@@ -45,6 +45,11 @@ function setupCamera() {
 	rotate(radians(camRotationLeft), createVector(0, 1, 0));
 }
 
+// disable touch-based screen dragging
+function touchMoved() {
+	return false;
+}
+
 function updatePoints() {
 	var x = xOff;
 	var cityX = cityXoff;
@@ -185,6 +190,26 @@ function moveMap() {
 		yMovement = true;
 	}
 
+	//touch support
+	if (touches[0]) {
+		if (currentTouch) previousTouch = createVector(currentTouch.x, currentTouch.y);
+		else previousTouch = createVector(touches[0].x, touches[0].y);
+
+		currentTouch = createVector(touches[0].x, touches[0].y);
+
+		if (previousTouch.equals(currentTouch)) {
+			//
+		} else {
+			var horz = (previousTouch.x - currentTouch.x) * touchDampen;
+			var vert = (currentTouch.y - previousTouch.y) * touchDampen;
+
+			currentX = easeValue(currentX, horz - vert, movementEase);
+			xMovement = true;
+			currentY = easeValue(currentY, vert + horz, movementEase);
+			yMovement = true;
+		}
+	} else if (currentTouch) previousTouch = createVector(currentTouch.x, currentTouch.y);
+
 	if (!xMovement) currentX = easeValue(currentX, 0, movementEase);
 	if (!yMovement) currentY = easeValue(currentY, 0, movementEase);
 
@@ -211,13 +236,22 @@ function moveMap() {
 	select('#northtext').html(nf(yOff / 10, 0, 1));
 }
 
+//clear touch data on touch end
+function touchEnded() {
+	currentTouch = null;
+	previousTouch = null;
+}
+
 function handleInput(e) {
 	if (e.keyCode == 13) {
 		e.preventDefault();
 		var input = inputBox.value;
+		if (input == '') return;
+
 		inputBox.value = null;
 
 		//check for nearby pins
+		updateStories();
 		var near = false;
 		for (var i = 0; i < stories.length; i++) {
 			if (dist(stories[i].pos.x, stories[i].pos.y, xOff, yOff) < pinDistance) near = true;
@@ -236,17 +270,11 @@ function handleInput(e) {
 					else h = h + ':' + m + 'am';
 					
 					var time = day() + '/' + month() + '/' + year() + ' - ' + h;
-					
-					var newJSON = {};
-					newJSON.x = xOff;
-					newJSON.y = yOff;
-					newJSON.text = input;
-					newJSON.time = time;
 
 					storyReady = false;
 
-					append(storyJSON['stories'], newJSON);
-					issueRequest(JSON.stringify(storyJSON));
+					//send new pin to server
+					issueRequest(input, time, xOff, yOff);
 				} else {
 					inputBox.placeholder = 'multiple pins placed too quickly';
 					setTimeout(function() {
@@ -304,28 +332,45 @@ function passTime() {
 	}
 }
 
-function updateStories() {
-	if (storyData) {
-		stories = [];
-		storyData = storyJSON['stories'];
+var readerPath = 'https://exp.v-os.ca/cartographer/scripts/private/reader.php'
 
-		for (var i = 0; i < storyData.length; i++) {
-			var currentStory = storyData[i];
-			append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
+function updateStories() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', readerPath, true);
+	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+		if (xhr.status === 200) {
+			//update stories
+			var newStories = xhr.responseText;
+			storyData = JSON.parse(newStories);
+
+			//add new stories to list
+			for (var i = stories.length; i < storyData['stories'].length; i++) {
+				var currentStory = storyData['stories'][i];
+				append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
+			}
 		}
-	} else console.log('Had trouble loading stories during this ping.');
+		else {
+			//handle error
+			console.log('Had trouble loading stories during this ping.');
+		}
+	};
+	var k = document.getElementById('k').className;
+	var t = getCookie('t');
+	xhr.send(encodeURI('k=' + k + '&t=' + t + '&request=text' + '&r=' + Math.random(0, 100000)));
 }
 
-var apiPath = 'https://exp.v-os.ca/cartographer/scripts/private/writer.php';
+var writerPath = 'https://exp.v-os.ca/cartographer/scripts/private/writer.php';
 
-function issueRequest(sText) {
+function issueRequest(text, time, x, y) {
 	var xhr = new XMLHttpRequest();
-	xhr.open('POST', apiPath, true);
+	xhr.open('POST', writerPath, true);
 	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	xhr.onload = function() {
 		if (xhr.status === 200) {
 			//handle response
 			console.log(xhr.responseText);
+			updateStories();
 		}
 		else {
 			//handle error
@@ -334,16 +379,15 @@ function issueRequest(sText) {
 	};
 	var k = document.getElementById('k').className;
 	var t = getCookie('t');
-	xhr.send(encodeURI('k=' + k + '&t=' + t + '&text=' + sText));
+	xhr.send(encodeURI('k=' + k + '&t=' + t + '&text=' + text + '&time=' + time + '&x=' + x + '&y=' + y));
 }
 
-//update the stories every second
+//update stories every 12 seconds
 setInterval(function() {
-	if (updateStories()) {
-		storyJSON = loadJSON('assets/stories.json', updateStories());
-	}
-}, 1000);
+	updateStories();
+}, 12000);
 
+//set 10 second pin interval limit
 setInterval(function() {
 	storyReady = true;
 }, 10000);

@@ -4,6 +4,10 @@ p5.disableFriendlyErrors = true;
 //sketch size
 var size = 600;
 
+//touch support
+var currentTouch;
+var previousTouch;
+
 //noise
 var xOff = 0;
 var yOff = 0;
@@ -11,6 +15,7 @@ var res = 0.1;
 
 //movement speed
 var speed = 0.15;
+var touchDampen = 0.015;
 var currentX = 0;
 var currentY = 0;
 var movementEase = 0.1;
