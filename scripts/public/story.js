@@ -22,7 +22,7 @@ function Story (x, y, storyText, time) {
 					translate(0, -storyHeight * 3, 0);
 					rotate(radians(-camRotationLeft), createVector(0, 1, 0));
 					rotate(radians(-camRotationUp), createVector(1, 0, 0));
-					text(this.text + "\n\n" + this.time, 0, 0);
+					text(htmlspecialchars_decode(this.text) + "\n\n" + this.time, 0, 0);
 				pop();
 
 				rotate(radians(0), createVector(1, 0, 0));
