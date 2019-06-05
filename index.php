@@ -2,6 +2,7 @@
 session_start();
 include 'scripts/private/crypt.php';
 setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
+
 ?>
 
 <!DOCTYPE html>
@@ -43,5 +44,6 @@ setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
 			<span class="ui" id="eastsymbol">°la</span>
 		</div>
 		<div id="k" class="<?php echo $_SESSION['k'] ?>" style="display:none"></div>
+		<script>liveUpdate = <?php echo ($liveUpdate) ? 'true' : 'false' ?>;</script>
 	</body>
 </html>

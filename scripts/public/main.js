@@ -251,7 +251,7 @@ function handleInput(e) {
 		inputBox.value = null;
 
 		//check for nearby pins
-		updateStories();
+		if (liveUpdate) updateStories();
 		var near = false;
 		for (var i = 0; i < stories.length; i++) {
 			if (dist(stories[i].pos.x, stories[i].pos.y, xOff, yOff) < pinDistance) near = true;
@@ -273,8 +273,9 @@ function handleInput(e) {
 
 					storyReady = false;
 
-					//send new pin to server
+					//send new pin to server, and create local copy if live updates are off
 					issueRequest(input, time, xOff, yOff);
+					if (!liveUpdate) append(stories, new Story(xOff, yOff, input, time));	
 				} else {
 					inputBox.placeholder = 'multiple pins placed too quickly';
 					setTimeout(function() {
@@ -370,7 +371,7 @@ function issueRequest(text, time, x, y) {
 		if (xhr.status === 200) {
 			//handle response
 			console.log(xhr.responseText);
-			updateStories();
+			if (liveUpdate) updateStories();
 		}
 		else {
 			//handle error
@@ -382,10 +383,11 @@ function issueRequest(text, time, x, y) {
 	xhr.send(encodeURI('k=' + k + '&t=' + t + '&text=' + text + '&time=' + time + '&x=' + x + '&y=' + y));
 }
 
-//update stories every 12 seconds
+//update stories
+
 setInterval(function() {
-	updateStories();
-}, 12000);
+	if (liveUpdate) updateStories();
+}, updateInterval);
 
 //set 10 second pin interval limit
 setInterval(function() {

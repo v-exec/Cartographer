@@ -89,6 +89,8 @@ var storyFont;
 var storyJSON;
 var storyData = [];
 var storyReady = true;
+var liveUpdate;
+var updateInterval = 10000;
 
 //input
 var inputBox;

@@ -1,2 +1,5 @@
-assets/media
 crypt.php
+clean.php
+blacklist/
+media/
+stories/

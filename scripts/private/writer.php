@@ -32,6 +32,9 @@ if (strlen($uText) > 40) {
 	return;
 }
 
+include 'clean.php';
+$clean = clean($uText);
+
 //check if time is formatted properly
 $noon = substr($uTime, strlen($uTime) - 2, strlen($uTime));
 
@@ -75,18 +78,29 @@ $newObject = (object) [
 	'time' => $uTime
 ];
 
-//parse json
-$c = file_get_contents('../../stories/stories.json');
-$j = json_decode($c, TRUE);
-array_push($j['stories'], $newObject);
-$j = json_encode($j);
+//feed to stories or moderation file
+if ($clean) {
+	if ($liveUpdate) {
+		//parse json
+		$c = file_get_contents('../../stories/stories.json');
+		$j = json_decode($c, TRUE);
+		array_push($j['stories'], $newObject);
+		$j = json_encode($j);
 
-//append to stories
-$f = fopen('../../stories/stories.json','w');
-fwrite($f, $j);
-fclose($f);
+		//append to stories
+		$f = fopen('../../stories/stories.json','w');
+		fwrite($f, $j);
+		fclose($f);
+	} else {
+		//append to moderation file
+		$c = file_get_contents('../../stories/moderation.txt');
+		$write = json_encode($newObject, TRUE);
+		$f = fopen('../../stories/moderation.txt', 'w');
+		fwrite($f, $c . $write . ",\n");
+		fclose($f);
+	}
+}
 
-//echo 'Pinning currently offline.';
 echo 'Pin saved.';
 return;
 ?>
