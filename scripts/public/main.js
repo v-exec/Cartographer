@@ -170,22 +170,22 @@ function moveMap() {
 	var xMovement = false;
 	var yMovement = false;
 
-	if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+	if (keyIsDown(LEFT_ARROW)) {
 		currentX = easeValue(currentX, -speed, movementEase);
 		xMovement = true;
 	}
 	
-	if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+	if (keyIsDown(RIGHT_ARROW)) {
 		currentX = easeValue(currentX, speed, movementEase);
 		xMovement = true;
 	}
 	
-	if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+	if (keyIsDown(DOWN_ARROW)) {
 		currentY = easeValue(currentY, -speed, movementEase);
 		yMovement = true;
 	}
 	
-	if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+	if (keyIsDown(UP_ARROW)) {
 		currentY = easeValue(currentY, speed, movementEase);
 		yMovement = true;
 	}
