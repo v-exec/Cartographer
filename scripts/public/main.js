@@ -367,7 +367,7 @@ function issueRequest(text, time, x, y) {
 	xhr.onload = function() {
 		if (xhr.status === 200) {
 			//handle response
-			console.log(xhr.responseText);
+			//console.log(xhr.responseText);
 			if (liveUpdate) updateStories();
 		}
 		else {
