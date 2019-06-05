@@ -91,6 +91,7 @@ var storyData = [];
 var storyReady = true;
 var liveUpdate;
 var updateInterval = 12000;
+var postIntervalLimit = 10000;
 
 //input
 var inputBox;

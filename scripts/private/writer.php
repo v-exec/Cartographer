@@ -73,5 +73,6 @@ if ($clean) {
 	}
 }
 
+echo 'pin processed';
 return;
 ?>

@@ -2,7 +2,7 @@
 session_start();
 include 'scripts/private/crypt.php';
 setcookie('t', $_SESSION['t'], time() + (86400 * 30), "/");
-
+$_SESSION['previousRequest'] = 0;
 ?>
 
 <!DOCTYPE html>
