@@ -90,7 +90,7 @@ var storyJSON;
 var storyData = [];
 var storyReady = true;
 var liveUpdate;
-var updateInterval = 10000;
+var updateInterval = 12000;
 
 //input
 var inputBox;
