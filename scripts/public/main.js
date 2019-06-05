@@ -356,9 +356,7 @@ function updateStories() {
 			console.log('Had trouble loading stories during this ping.');
 		}
 	};
-	var k = document.getElementById('k').className;
-	var t = getCookie('t');
-	xhr.send(encodeURI('k=' + k + '&t=' + t + '&request=text' + '&r=' + Math.random(0, 100000)));
+	xhr.send(encodeURI('request=text' + '&r=' + Math.random(0, 100000)));
 }
 
 var writerPath = 'https://exp.v-os.ca/cartographer/scripts/private/writer.php';
