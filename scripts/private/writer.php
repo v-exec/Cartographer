@@ -93,9 +93,9 @@ if ($clean) {
 		fclose($f);
 	} else {
 		//append to moderation file
-		$c = file_get_contents('../../stories/moderation.txt');
+		$c = file_get_contents('filter/moderation.txt');
 		$write = json_encode($newObject, TRUE);
-		$f = fopen('../../stories/moderation.txt', 'w');
+		$f = fopen('filter/stories/moderation.txt', 'w');
 		fwrite($f, $c . $write . ",\n");
 		fclose($f);
 	}

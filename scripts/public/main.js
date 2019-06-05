@@ -170,22 +170,22 @@ function moveMap() {
 	var xMovement = false;
 	var yMovement = false;
 
-	if (keyIsDown(LEFT_ARROW)) {
+	if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
 		currentX = easeValue(currentX, -speed, movementEase);
 		xMovement = true;
 	}
 	
-	if (keyIsDown(RIGHT_ARROW)) {
+	if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
 		currentX = easeValue(currentX, speed, movementEase);
 		xMovement = true;
 	}
 	
-	if (keyIsDown(DOWN_ARROW)) {
+	if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
 		currentY = easeValue(currentY, -speed, movementEase);
 		yMovement = true;
 	}
 	
-	if (keyIsDown(UP_ARROW)) {
+	if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
 		currentY = easeValue(currentY, speed, movementEase);
 		yMovement = true;
 	}
@@ -251,7 +251,6 @@ function handleInput(e) {
 		inputBox.value = null;
 
 		//check for nearby pins
-		if (liveUpdate) updateStories();
 		var near = false;
 		for (var i = 0; i < stories.length; i++) {
 			if (dist(stories[i].pos.x, stories[i].pos.y, xOff, yOff) < pinDistance) near = true;
@@ -333,7 +332,7 @@ function passTime() {
 	}
 }
 
-var readerPath = 'https://exp.v-os.ca/cartographer/scripts/private/reader.php'
+var readerPath = 'https://exp.v-os.ca/cartographer/scripts/private/reader.php';
 
 function updateStories() {
 	var xhr = new XMLHttpRequest();
