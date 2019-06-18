@@ -18,7 +18,7 @@ function Biome (x, y, pc, vc, cc, wc, wh, hm, ch, lh) {
 	this.currentClouds;
 
 	this.clouds = function(c) {
-		this.currentClouds = map(noise(c), 0, 1, 0, this.cloudChance);
+		this.currentClouds = p.map(p.noise(c), 0, 1, 0, this.cloudChance);
 	}
 }
 
@@ -27,10 +27,10 @@ function blendBiomes(b1, b2, q) {
 	var newValley = colorLerp(b1.valleyColor, b2.valleyColor, q);
 	var newCity = colorLerp(b1.cityColor, b2.cityColor, q);
 	var newWater = colorLerp(b1.waterColor, b2.waterColor, q);
-	var newWaterHeight = lerp(b1.waterHeight, b2.waterHeight, q);
-	var newHeight = lerp(b1.heightMul, b2.heightMul, q);
+	var newWaterHeight = p.lerp(b1.waterHeight, b2.waterHeight, q);
+	var newHeight = p.lerp(b1.heightMul, b2.heightMul, q);
 	var newCityChance = 0;
-	var newCloudChance = lerp(b1.cloudChance, b2.cloudChance, q);
+	var newCloudChance = p.lerp(b1.cloudChance, b2.cloudChance, q);
 	return new Biome(0, 0, newPeak, newValley, newCity, newWater, newWaterHeight, newHeight, newCityChance, newCloudChance);
 }
 

@@ -1,28 +1,5 @@
-function preload() {
-	storyFont = loadFont('assets/Comfortaa-Bold.otf');
-	storyJSON = loadJSON('stories/stories.json');
-	storyData = storyJSON['stories'];
-	inputBox = document.getElementById('inputBox');
-}
-
-function setup() {
-	var canvas = createCanvas(size, size, WEBGL);
-	canvas.parent(document.getElementById('canvasParent'));
-
-	noStroke();
-
-	initializeBiomes();
-	initializeColors();
-	initializeCloudNoise();
-	generatePoints();
-	generateStories();
-}
-
-function draw() {
-	background(34);
-
+function animate() {
 	setupCamera();
-	grid.show();
 
 	manageClouds();
 	passTime();
@@ -33,19 +10,21 @@ function draw() {
 	for (var i = 0; i < stories.length; i++) {
 		stories[i].show();
 	}
+
+	requestAnimationFrame(animate);
+	renderer.render(scene, camera);
 }
+animate();
 
 function setupCamera() {
-	translate(0, camHeight, camZoom);
+	camera.lookAt(new THREE.Vector3(0, cameraAngle, 0));
 
-	//top-down angle
-	rotate(radians(camRotationUp), createVector(1, 0, 0));
-
-	//left-right angle
-	rotate(radians(camRotationLeft), createVector(0, 1, 0));
+	camera.position.x = -camZoom;
+	camera.position.z = camZoom;
+	camera.position.y = camHeight;
 }
 
-// disable touch-based screen dragging
+//disable touch-based screen dragging
 function touchMoved() {
 	return false;
 }
@@ -88,10 +67,10 @@ function updatePoints() {
 			var index = i + (j * pointCount);
 
 			//manage biomes
-			var forestNoise = noise(forestX, forestY);
-			var desertNoise = noise(desertX, desertY);
-			var oceanNoise = noise(oceanX, oceanY);
-			var alienNoise = noise(alienX, alienY);
+			var forestNoise = p.noise(forestX, forestY);
+			var desertNoise = p.noise(desertX, desertY);
+			var oceanNoise = p.noise(oceanX, oceanY);
+			var alienNoise = p.noise(alienX, alienY);
 
 			//find chosen biome(s)
 			var biomeVal = [forestNoise, desertNoise, oceanNoise, alienNoise];
@@ -123,19 +102,19 @@ function updatePoints() {
 			var resultBiome;
 			var biomeDifference = chosenBiomeValue - secondaryBiomeValue;
 
-			if (abs(biomeDifference) < biomeBlendThreshold) resultBiome = blendBiomes(chosenBiome, secondaryBiome, map(biomeDifference, -biomeBlendThreshold, biomeBlendThreshold, 1, 0, true));
+			if (p.abs(biomeDifference) < biomeBlendThreshold) resultBiome = blendBiomes(chosenBiome, secondaryBiome, p.map(biomeDifference, -biomeBlendThreshold, biomeBlendThreshold, 1, 0, true));
 			else resultBiome = chosenBiome;
 
 			points[index].nature(resultBiome.peakColor, resultBiome.valleyColor, resultBiome.cityColor, resultBiome.waterColor, resultBiome.heightMul);
 
 			//make terrain
-			var terrainNoise = (noise(x, y) * -resultBiome.heightMul) + heightLower;
+			var terrainNoise = (p.noise(x, y) * -resultBiome.heightMul);
 			points[index].isBuilding = false;
 			points[index].isCloud = false;
 
 			//add cities
 			var newNoise = terrainNoise;
-			if (noise(cityX, cityY) < resultBiome.cityChance) {
+			if (p.noise(cityX, cityY) < resultBiome.cityChance) {
 				for (var k = 0; k < heightLayers; k++) {
 					if (terrainNoise > cityGap * k) newNoise = (cityGap * cityMul) * k;
 				}
@@ -144,20 +123,20 @@ function updatePoints() {
 			if (points[index].isBuilding) terrainNoise = newNoise;
 
 			//add clouds
-			if (noise(cloudX, cloudY) < resultBiome.currentClouds) {
+			if (p.noise(cloudX, cloudY) < resultBiome.currentClouds) {
 				terrainNoise = -cloudHeight;
 				points[index].isBuilding = false;
 				points[index].isCloud = true;
 			}
 
 			//make origin
-			var mDistance = dist(0, 0, xOff, yOff);
+			var mDistance = p.dist(0, 0, xOff, yOff);
 			if (mDistance < originSize) {
 				points[index].isBuilding = false;
 				points[index].isCloud = false;
 
-				currentWaterHeight = lerp(resultBiome.waterHeight, gridHeight, map(mDistance, 0, originSize, 1, 0));
-				points[index].update(lerp(terrainNoise, gridHeight - 1, map(mDistance, 0, originSize, 1, 0)));
+				currentWaterHeight = p.lerp(resultBiome.waterHeight, gridHeight, p.map(mDistance, 0, originSize, 1, 0));
+				points[index].update(p.lerp(terrainNoise, gridHeight - 1, p.map(mDistance, 0, originSize, 1, 0)));
 			} else {
 				currentWaterHeight = resultBiome.waterHeight;
 				points[index].update(terrainNoise);
@@ -170,32 +149,32 @@ function moveMap() {
 	var xMovement = false;
 	var yMovement = false;
 
-	if (keyIsDown(LEFT_ARROW)) {
+	if (p.keyIsDown(p.LEFT_ARROW)) {
 		currentX = easeValue(currentX, -speed, movementEase);
 		xMovement = true;
 	}
 	
-	if (keyIsDown(RIGHT_ARROW)) {
+	if (p.keyIsDown(p.RIGHT_ARROW)) {
 		currentX = easeValue(currentX, speed, movementEase);
 		xMovement = true;
 	}
 	
-	if (keyIsDown(DOWN_ARROW)) {
+	if (p.keyIsDown(p.DOWN_ARROW)) {
 		currentY = easeValue(currentY, -speed, movementEase);
 		yMovement = true;
 	}
 	
-	if (keyIsDown(UP_ARROW)) {
+	if (p.keyIsDown(p.UP_ARROW)) {
 		currentY = easeValue(currentY, speed, movementEase);
 		yMovement = true;
 	}
 
 	//touch support
-	if (touches[0]) {
-		if (currentTouch) previousTouch = createVector(currentTouch.x, currentTouch.y);
-		else previousTouch = createVector(touches[0].x, touches[0].y);
+	if (p.touches[0]) {
+		if (currentTouch) previousTouch = p.createVector(currentTouch.x, currentTouch.y);
+		else previousTouch = p.createVector(p.touches[0].x, p.touches[0].y);
 
-		currentTouch = createVector(touches[0].x, touches[0].y);
+		currentTouch = p.createVector(p.touches[0].x, p.touches[0].y);
 
 		if (previousTouch.equals(currentTouch)) {
 			//
@@ -208,12 +187,12 @@ function moveMap() {
 			currentY = easeValue(currentY, vert + horz, movementEase);
 			yMovement = true;
 		}
-	} else if (currentTouch) previousTouch = createVector(currentTouch.x, currentTouch.y);
+	} else if (currentTouch) previousTouch = p.createVector(currentTouch.x, currentTouch.y);
 
 	if (!xMovement) currentX = easeValue(currentX, 0, movementEase);
 	if (!yMovement) currentY = easeValue(currentY, 0, movementEase);
 
-	var movement = createVector(currentX, currentY);
+	var movement = p.createVector(currentX, currentY);
 	movement.limit(speed);
 
 	xOff += movement.x;
@@ -232,12 +211,14 @@ function moveMap() {
 	alien.x += movement.x / biomeSize;
 	alien.y += movement.y / biomeSize;
 
-	select('#easttext').html(nf(xOff / 10, 0, 1));
-	select('#northtext').html(nf(yOff / 10, 0, 1));
+	p.select('#easttext').html(p.nf(xOff / 10, 0, 1));
+	p.select('#northtext').html(p.nf(yOff / 10, 0, 1));
 }
 
 //clear touch data on touch end
-function touchEnded() {
+window.addEventListener("touchend", touchEnd, false);
+
+function touchEnd(evt) {
 	currentTouch = null;
 	previousTouch = null;
 }
@@ -253,28 +234,28 @@ function handleInput(e) {
 		//check for nearby pins
 		var near = false;
 		for (var i = 0; i < stories.length; i++) {
-			if (dist(stories[i].pos.x, stories[i].pos.y, xOff, yOff) < pinDistance) near = true;
+			if (p.dist(stories[i].pos.x, stories[i].pos.y, xOff, yOff) < pinDistance) near = true;
 		}
 
 		//create new pin - server save
-		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
+		if (p.dist(xOff, yOff, 0, 0) > pinOriginDistance) {
 			if (!near) {
 				if (storyReady) {
-					var h = hour();
-					var m = minute();
+					var h = p.hour();
+					var m = p.minute();
 
 					if (m < 10) m = '0' + m;
 					if (h == 12) h = h + ':' + m + 'pm';
 					else if (h > 12) h = (h - 12) + ':' + m + 'pm';
 					else h = h + ':' + m + 'am';
 					
-					var time = day() + '/' + month() + '/' + year() + ' - ' + h;
+					var time = p.day() + '/' + p.month() + '/' + p.year() + ' - ' + h;
 
 					storyReady = false;
 
 					//send new pin to server, and create local copy if live updates are off
 					issueRequest(input, time, xOff, yOff);
-					if (!liveUpdate) append(stories, new Story(xOff, yOff, input, time));	
+					if (!liveUpdate) p.append(stories, new Story(xOff, yOff, input, time));	
 
 					setTimeout(function() {
 						storyReady = true;
@@ -310,8 +291,8 @@ function manageClouds() {
 
 	cloudMovementX += windChaos;
 	cloudMovementY += windChaos;
-	cloudXoff += map(noise(cloudMovementX), 0, 1, -cloudSpeedMax, cloudSpeedMax);
-	cloudYoff += map(noise(cloudMovementY), 0, 1, -cloudSpeedMax, cloudSpeedMax);
+	cloudXoff += p.map(p.noise(cloudMovementX), 0, 1, -cloudSpeedMax, cloudSpeedMax);
+	cloudYoff += p.map(p.noise(cloudMovementY), 0, 1, -cloudSpeedMax, cloudSpeedMax);
 }
 
 function passTime() {
@@ -319,7 +300,7 @@ function passTime() {
 	if (clock > 12) clock = -12;
 
 	if (clock > 6 && clock < 8) {
-		var sunset = map(clock, 6, 8, 0, 1);
+		var sunset = p.map(clock, 6, 8, 0, 1);
 		biomeSunset(forest, sunset);
 		biomeSunset(desert, sunset);
 		biomeSunset(ocean, sunset);
@@ -327,61 +308,13 @@ function passTime() {
 		currentCloud = p5.Vector.lerp(cloudColor, p5.Vector.div(cloudColor, nightDarkness), sunset);
 
 	} else if (clock < -6 && clock > -8) {
-		var sunrise = map(clock, -8, -6, 0, 1);
+		var sunrise = p.map(clock, -8, -6, 0, 1);
 		biomeSunrise(forest, sunrise);
 		biomeSunrise(desert, sunrise);
 		biomeSunrise(ocean, sunrise);
 		biomeSunrise(alien, sunrise);
 		currentCloud = p5.Vector.lerp(p5.Vector.div(cloudColor, nightDarkness), cloudColor, sunrise);
 	}
-}
-
-var readerPath = 'https://exp.v-os.ca/cartographer/scripts/private/reader.php';
-
-function updateStories() {
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', readerPath, true);
-	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhr.onload = function() {
-		if (xhr.status === 200) {
-			//update stories
-			var newStories = xhr.responseText;
-			storyData = JSON.parse(newStories);
-
-			//add new stories to list
-			for (var i = stories.length; i < storyData['stories'].length; i++) {
-				var currentStory = storyData['stories'][i];
-				append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
-			}
-		}
-		else {
-			//handle error
-			console.log('Had trouble loading stories during this ping.');
-		}
-	};
-	xhr.send(encodeURI('request=text' + '&r=' + Math.random(0, 100000)));
-}
-
-var writerPath = 'https://exp.v-os.ca/cartographer/scripts/private/writer.php';
-
-function issueRequest(text, time, x, y) {
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', writerPath, true);
-	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhr.onload = function() {
-		if (xhr.status === 200) {
-			//handle response
-			console.log(xhr.responseText);
-			if (liveUpdate) updateStories();
-		}
-		else {
-			//handle error
-			console.log('Did not recieve reply.');
-		}
-	};
-	var k = document.getElementById('k').className;
-	var t = getCookie('t');
-	xhr.send(encodeURI('k=' + k + '&t=' + t + '&text=' + text + '&time=' + time + '&x=' + x + '&y=' + y));
 }
 
 //update stories continuously
