@@ -4,7 +4,10 @@ include 'crypt.php';
 session_start();
 
 //check tokens
-if (!hash_equals($_SESSION['t'], $_POST['t']) || !password_verify($frontDoor, $_POST['t']) || !hash_equals($_SESSION['k'], $_POST['k']) || !password_verify($backDoor, $_POST['k'])) return echo 'token error';
+if (!hash_equals($_SESSION['t'], $_POST['t']) || !password_verify($frontDoor, $_POST['t']) || !hash_equals($_SESSION['k'], $_POST['k']) || !password_verify($backDoor, $_POST['k'])) {
+	echo 'token error';
+	return;
+}
 
 //check for text
 if ($_POST['text'] === null || $_POST['text'] === '') return;
